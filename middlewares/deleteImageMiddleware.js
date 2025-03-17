@@ -6,14 +6,7 @@ const asyncHandler = require('express-async-handler');
 const APIError = require('../utils/apiError');
 
 const getImagePath = (folderName, filename) => {
-  const imagePath = path.join(
-    __dirname,
-    '..',
-    // 'public',
-    'uploads',
-    folderName,
-    filename
-  ); // Adjust path
+  const imagePath = path.join(__dirname, '..', 'uploads', folderName, filename); // Adjust path
 
   return imagePath;
 };
