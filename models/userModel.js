@@ -7,10 +7,19 @@ const APIError = require('../utils/apiError');
 // 1- Create Schema
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
       trim: true,
-      required: [true, 'User name is required'],
+      required: [true, 'User firstName is required'],
+      minLength: [2, 'First name must be at least 2 characters long.'],
+      maxLength: [50, 'First name cannot exceed 50 characters.'],
+    },
+    lastName: {
+      type: String,
+      trim: true,
+      required: [true, 'User lastName is required'],
+      minLength: [2, 'Last name must be at least 2 characters long.'],
+      maxLength: [50, 'Last name cannot exceed 50 characters.'],
     },
     email: {
       type: String,
@@ -43,7 +52,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      emum: ['user', 'admin', 'manager'],
+      emum: ['user', 'admin'],
       default: 'user',
     },
     active: {
@@ -100,9 +109,21 @@ const userSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false,
+    // Ensure virtuals are included when converting documents to JSON and omitting _id and adding id
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id.toString();
+        delete ret._id;
+      },
+    },
+  }
 );
 
+// Function to hash password before saving
 userSchema.pre('save', async function (next) {
   const user = this;
 
@@ -118,6 +139,8 @@ userSchema.pre('save', async function (next) {
   return next(new APIError('Failed to hash password.', 500));
 });
 
+// Mongoose Virtuals
+
 userSchema.virtual('profileImageUrl').get(function () {
   // If there's an profileImage filename, generate the full URL, otherwise return null
   if (this.profileImage) {
@@ -125,9 +148,6 @@ userSchema.virtual('profileImageUrl').get(function () {
   }
   return null; // If no image exists
 });
-
-// Ensure virtuals are included when converting documents to JSON
-userSchema.set('toJSON', { virtuals: true });
 
 // 2- Create model
 const UserModel = mongoose.model('User', userSchema);

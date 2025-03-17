@@ -85,9 +85,15 @@ const productSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    // To enable virtuals
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    versionKey: false,
+    // Ensure virtuals are included when converting documents to JSON and omitting _id and adding id
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id.toString();
+        delete ret._id;
+      },
+    },
   }
 );
 
@@ -112,15 +118,18 @@ productSchema.virtual('imagesUrl').get(function () {
   return null; // If no image exists
 });
 
+// Get reviews on product (used with findOne)
 productSchema.virtual('reviews', {
   ref: 'Review',
-  foreignField: 'product',
   localField: '_id',
+  foreignField: 'product',
 });
 
 // Mongoose query middleware
+
+// Populate Category
 productSchema.pre(/^find/, function (next) {
-  this.populate({ path: 'category', select: 'name -_id' });
+  this.populate({ path: 'category', select: 'name' });
   next();
 });
 

@@ -30,13 +30,13 @@ const couponSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    versionKey: false,
     // Ensure virtuals are included when converting documents to JSON and omitting _id and adding id
     toJSON: {
       virtuals: true,
       transform: (doc, ret) => {
         ret.id = ret._id.toString();
         delete ret._id;
-        delete ret.__v;
       },
     },
   }

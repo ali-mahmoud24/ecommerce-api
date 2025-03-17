@@ -7,6 +7,10 @@ const reviewSchema = new mongoose.Schema(
   {
     title: {
       type: String,
+      maxLength: [
+        150,
+        'Review title is too long. Maximum length is 150 characters',
+      ],
     },
     rating: {
       type: Number,
@@ -19,7 +23,7 @@ const reviewSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Review must belong to a User'],
     },
-    
+
     // Parent refrence (one to many)
     product: {
       type: mongoose.Schema.ObjectId,
@@ -27,15 +31,27 @@ const reviewSchema = new mongoose.Schema(
       required: [true, 'Review must belong to a Product'],
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false,
+    // Ensure virtuals are included when converting documents to JSON and omitting _id and adding id
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        ret.id = ret._id.toString();
+        delete ret._id;
+      },
+    },
+  }
 );
 
+// Populate User on Review
 reviewSchema.pre(/^find/, function (next) {
   this.populate({ path: 'user', select: 'name' });
   next();
 });
 
-// Add static methods
+// Mongoose Static methods
 reviewSchema.statics.calculateAverageRatingsAndQuantity = async function (
   productId
 ) {
