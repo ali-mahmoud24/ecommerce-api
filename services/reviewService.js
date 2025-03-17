@@ -32,25 +32,25 @@ const createFilterObject = (req, res, next) => {
 // @ route  GET    /api/v1/reviews
 // @ access Public
 
-const getReviews = factory.getAll(ReviewModel, 'Review');
+const getReviews = factory.getAll(ReviewModel);
 
 // @ desc   Get specific review by id
 // @ route  GET    /api/v1/reviews/:id
 // @ access Public
 
-const getReviewById = factory.getOneById(ReviewModel, 'Review');
+const getReviewById = factory.getOneById(ReviewModel);
 
 // @ desc   Update specific review
 // @ route  PUT    /api/v1/reviews/:id
 // @ access Private/Protect/User
 
-const updateReviewById = factory.updateOneById(ReviewModel, 'Review');
+const updateReviewById = factory.updateOneById(ReviewModel);
 
 // @ desc   Delete specific review
 // @ route  DELETE    /api/v1/reviews/:id
 // @ access Private/Protect/User-Admin
 
-const deleteReviewById = factory.deleteOne(ReviewModel, 'review');
+const deleteReviewById = factory.deleteOne(ReviewModel);
 
 module.exports = {
   createReview,

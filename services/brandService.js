@@ -34,25 +34,25 @@ const createBrand = factory.createOne(BrandModel);
 // @ route  GET    /api/v1/brands
 // @ access Public
 
-const getBrands = factory.getAll(BrandModel, 'Brand');
+const getBrands = factory.getAll(BrandModel);
 
 // @ desc   Get specific brand by id
 // @ route  GET    /api/v1/brands/:id
 // @ access Public
 
-const getBrandById = factory.getOneById(BrandModel, 'Brand');
+const getBrandById = factory.getOneById(BrandModel);
 
 // @ desc   Update specific brand
 // @ route  PUT    /api/v1/brands/:id
 // @ access Private
 
-const updateBrandById = factory.updateOneById(BrandModel, 'Brand', 'image');
+const updateBrandById = factory.updateOneById(BrandModel, 'image');
 
 // @ desc   Delete specific Brand
 // @ route  DELETE    /api/v1/brands/:id
 // @ access Private
 
-const deleteBrandById = factory.deleteOne(BrandModel, 'Brand', 'image');
+const deleteBrandById = factory.deleteOne(BrandModel, 'image');
 
 module.exports = {
   createBrand,

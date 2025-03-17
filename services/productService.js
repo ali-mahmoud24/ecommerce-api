@@ -42,13 +42,13 @@ const createProduct = factory.createOne(ProductModel);
 // @ route  GET    /api/v1/products
 // @ access Public
 
-const getproducts = factory.getAll(ProductModel, 'Product');
+const getproducts = factory.getAll(ProductModel);
 
 // @ desc   Get specific Product by id
 // @ route  GET    /api/v1/products/:id
 // @ access Public
 
-const getProductById = factory.getOneById(ProductModel, 'Product', 'reviews');
+const getProductById = factory.getOneById(ProductModel, 'reviews');
 
 // @ desc   Update specific Product
 // @ route  PUT    /api/v1/products/:id

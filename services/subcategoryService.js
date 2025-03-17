@@ -37,31 +37,25 @@ const createSubcategory = factory.createOne(SubcategoryModel);
 // @ route  GET    /api/v1/subcategories
 // @ access Public
 
-const getSubcategories = factory.getAll(SubcategoryModel, 'Subcategory');
+const getSubcategories = factory.getAll(SubcategoryModel);
 
 // @ desc   Get specific Subcategory by id
 // @ route  GET    /api/v1/subcategories/:id
 // @ access Public
 
-const getSubcategoryById = factory.getOneById(SubcategoryModel, 'Subcategory');
+const getSubcategoryById = factory.getOneById(SubcategoryModel);
 
 // @ desc   Update specific SubCategory
 // @ route  PUT    /api/v1/subcategories/:id
 // @ access Private
 
-const updateSubcategoryById = factory.updateOneById(
-  SubcategoryModel,
-  'Subcategory'
-);
+const updateSubcategoryById = factory.updateOneById(SubcategoryModel);
 
 // @ desc   Delete specific Subcategory
 // @ route  DELETE    /api/v1/subcategories/:id
 // @ access Private
 
-const deleteSubcategoryById = factory.deleteOne(
-  SubcategoryModel,
-  'Subcategory'
-);
+const deleteSubcategoryById = factory.deleteOne(SubcategoryModel);
 
 module.exports = {
   createSubcategory,

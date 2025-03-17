@@ -39,13 +39,13 @@ const createUser = factory.createOne(UserModel);
 // @ route  GET    /api/v1/users
 // @ access Private
 
-const getUsers = factory.getAll(UserModel, 'User');
+const getUsers = factory.getAll(UserModel);
 
 // @ desc   Get specific user by id
 // @ route  GET    /api/v1/users/:id
 // @ access Private
 
-const getUserById = factory.getOneById(UserModel, 'User');
+const getUserById = factory.getOneById(UserModel);
 
 // @ desc   Update specific user
 // @ route  PUT    /api/v1/users/:id
@@ -63,7 +63,8 @@ const updateUserById = asyncHandler(async (req, res, next) => {
   const updatedDocument = await UserModel.findByIdAndUpdate(
     id,
     {
-      name: req.body.name,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       slug: req.body.slug,
       phone: req.body.phone,
       email: req.body.email,

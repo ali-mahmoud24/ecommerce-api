@@ -186,6 +186,7 @@ const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
 // @ desc   Apply coupon on user cart
 // @ route  PUT    /api/v1/cart/applyCoupon
 // @ access Protect/User
+
 const applyCoupon = asyncHandler(async (req, res, next) => {
   const { coupon: couponName } = req.body;
   const userId = req.user._id;

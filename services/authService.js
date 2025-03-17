@@ -137,7 +137,8 @@ const allowedTo = (...roles) =>
 const signup = asyncHandler(async (req, res, next) => {
   // 1- Create user
   const user = await UserModel.create({
-    name: req.body.name,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
     email: req.body.email,
     password: req.body.password,
   });
@@ -200,7 +201,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
   // 4) Send the reset code via email
 
-  const message = `Hi ${user.name},
+  const message = `Hi ${user.firstName},
   \n We received a request to reset the password on your E-shop Account. \n 
   ${resetCode} \n 
   Enter this code to complete the reset. \n

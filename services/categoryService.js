@@ -33,33 +33,25 @@ const createCategory = factory.createOne(CategoryModel);
 // @ route  GET    /api/v1/categories
 // @ access Public
 
-const getCategories = factory.getAll(CategoryModel, 'Category');
+const getCategories = factory.getAll(CategoryModel);
 
 // @ desc   Get specific category by id
 // @ route  GET    /api/v1/categories/:id
 // @ access Public
 
-const getCategoryById = factory.getOneById(CategoryModel, 'Category');
+const getCategoryById = factory.getOneById(CategoryModel);
 
 // @ desc   Update specific category
 // @ route  PUT    /api/v1/categories/:id
 // @ access Private
 
-const updateCategoryById = factory.updateOneById(
-  CategoryModel,
-  'Category',
-  'image'
-);
+const updateCategoryById = factory.updateOneById(CategoryModel, 'image');
 
 // @ desc   Delete specific category
 // @ route  DELETE    /api/v1/categories/:id
 // @ access Private
 
-const deleteCategoryById = factory.deleteOne(
-  CategoryModel,
-  'Category',
-  'image'
-);
+const deleteCategoryById = factory.deleteOne(CategoryModel, 'image');
 
 module.exports = {
   createCategory,

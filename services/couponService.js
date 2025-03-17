@@ -11,25 +11,25 @@ const createCoupon = factory.createOne(CouponModel);
 // @ route  GET    /api/v1/coupons
 // @ access Protect/Admin
 
-const getCoupons = factory.getAll(CouponModel, 'Coupon');
+const getCoupons = factory.getAll(CouponModel);
 
 // @ desc   Get specific coupon by id
 // @ route  GET    /api/v1/coupons/:id
 // @ access Protect/Admin
 
-const getCouponById = factory.getOneById(CouponModel, 'Coupon');
+const getCouponById = factory.getOneById(CouponModel);
 
 // @ desc   Update specific coupon
 // @ route  PUT    /api/v1/coupons/:id
 // @ access Protect/Admin
 
-const updateCouponById = factory.updateOneById(CouponModel, 'Coupon');
+const updateCouponById = factory.updateOneById(CouponModel);
 
 // @ desc   Delete specific coupon
 // @ route  DELETE    /api/v1/coupons/:id
 // @ access Protect/Admin
 
-const deleteCouponById = factory.deleteOne(CouponModel, 'Coupon');
+const deleteCouponById = factory.deleteOne(CouponModel);
 
 module.exports = {
   createCoupon,
