@@ -11,7 +11,7 @@ const createOne = (Model) =>
     res.status(201).json({ data: document });
   });
 
-const getAll = (Model, modelName = '') =>
+const getAll = (Model, populateOptions) =>
   asyncHandler(async (req, res) => {
     // Check for filter
     let filter = {};
@@ -22,7 +22,7 @@ const getAll = (Model, modelName = '') =>
     // Build Query
     const apiFeature = new APIFeature(Model.find(filter), req.query)
       .filter()
-      .search(modelName)
+      .search(Model.modelName)
       .limitFields()
       .sort();
 
@@ -33,15 +33,20 @@ const getAll = (Model, modelName = '') =>
     // Execute query
     const { mongooseQuery, paginationResult } = apiFeature;
 
+    let query = mongooseQuery;
+    if (populateOptions) {
+      query = mongooseQuery.populate(populateOptions);
+    }
+
     // Populate and execute
-    const documents = await mongooseQuery.exec();
+    const documents = await query.exec();
 
     res
       .status(200)
       .json({ results: documents.length, paginationResult, data: documents });
   });
 
-const getOneById = (Model, modelName, populateOptions) =>
+const getOneById = (Model, populateOptions) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
 
@@ -56,20 +61,20 @@ const getOneById = (Model, modelName, populateOptions) =>
     const document = await query;
 
     if (!document) {
-      return next(new APIError(`No ${modelName} for this Id ${id}`, 404));
+      return next(new APIError(`No ${Model.modelName} for this Id ${id}`, 404));
     }
 
     res.status(200).json({ data: document });
   });
 
-const updateOneById = (Model, modelName, imageField, multipleImagesField) =>
+const updateOneById = (Model, imageField, multipleImagesField) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
 
     const document = await Model.findById(id);
 
     if (!document) {
-      return next(new APIError(`No ${modelName} for this Id ${id}`, 404));
+      return next(new APIError(`No ${Model.modelName} for this Id ${id}`, 404));
     }
 
     const updatedDocument = await Model.findByIdAndUpdate(id, req.body, {
@@ -102,30 +107,14 @@ const updateOneById = (Model, modelName, imageField, multipleImagesField) =>
     res.status(200).json({ data: updatedDocument });
   });
 
-// const updateOneById = (Model, modelName) =>
-//   asyncHandler(async (req, res, next) => {
-//     const { id } = req.params;
-
-//     const document = await Model.findByIdAndUpdate(id, req.body, {
-//       new: true,
-//       runValidators: true,
-//     });
-
-//     if (!document) {
-//       return next(new APIError(`No ${modelName} for this Id ${id}`, 404));
-//     }
-
-//     res.status(200).json({ data: document });
-//   });
-
-const deleteOne = (Model, modelName, imageField, multipleImagesField) =>
+const deleteOne = (Model, imageField, multipleImagesField) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
 
     const document = await Model.findByIdAndDelete(id);
 
     if (!document) {
-      return next(new APIError(`No ${modelName} for this Id ${id}`, 404));
+      return next(new APIError(`No ${Model.modelName} for this Id ${id}`, 404));
     }
 
     if (document) {
@@ -137,22 +126,19 @@ const deleteOne = (Model, modelName, imageField, multipleImagesField) =>
       }
     }
 
-    // Trigger "remove" event when delete document
-    // await document.remove();
-
-    // To delete Mix of images
-    if (imageField && multipleImagesField) {
+    // To delete single image
+    if (imageField && !multipleImagesField) {
+      // Store the document in res.locals so it can be accessed in subsequent middleware
       res.locals.filename = document[imageField];
-      res.locals.filenames = document[multipleImagesField];
 
       // Proceed to the next middleware (image deletion)
       next();
     }
 
-    // To delete single image
-    if (imageField && !multipleImagesField) {
-      // Store the document in res.locals so it can be accessed in subsequent middleware
+    // To delete Mix of images
+    if (imageField && multipleImagesField) {
       res.locals.filename = document[imageField];
+      res.locals.filenames = document[multipleImagesField];
 
       // Proceed to the next middleware (image deletion)
       next();
