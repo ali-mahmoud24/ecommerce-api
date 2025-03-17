@@ -7,6 +7,7 @@ const {
 
 const {
   addAddress,
+  editAddress,
   removeAddress,
   getLoggedUserAddresses,
 } = require('../services/addressService');
@@ -19,6 +20,8 @@ const router = express.Router({ mergeParams: true });
 router.use(protect, allowedTo('user'));
 
 router.post('/', addAddressValidator, addAddress);
+
+router.put('/:id',  editAddress);
 
 router.get('/', getLoggedUserAddresses);
 

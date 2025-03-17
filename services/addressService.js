@@ -55,7 +55,31 @@ const addAddress = asyncHandler(async (req, res, next) => {
 // @ route  PATCH    /api/v1/addresses
 // @ access Protect/User
 
-// const editAddress = asyncHandler(async (req, res, next) => {});
+const editAddress = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+  const { id: addressId } = req.params;
+
+  const user = await UserModel.findById(userId);
+
+  const addressIndex = user.addresses.findIndex(
+    (address) => address._id.toString() === addressId
+  );
+
+  const udatedAddress = {
+    ...user.addresses[addressIndex],
+    ...req.body,
+  };
+
+  user.addresses[addressIndex] = udatedAddress;
+
+  await user.save();
+
+  res.status(200).json({
+    data: udatedAddress,
+    status: 'Succees',
+    message: 'Address edited succesfully',
+  });
+});
 
 // @ desc   Remove Address
 // @ route  DELETE    /api/v1/addresses/:id
@@ -97,6 +121,7 @@ const getLoggedUserAddresses = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   addAddress,
+  editAddress,
   removeAddress,
   getLoggedUserAddresses,
 };
