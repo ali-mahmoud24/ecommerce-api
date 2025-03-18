@@ -1,4 +1,9 @@
+const dotenv = require('dotenv');
+// Configure .env file
+dotenv.config({ path: '../config.env' });
+
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 const createToken = (id) =>
   jwt.sign({ userId: id }, process.env.JWT_SECRET_KEY, {
@@ -21,6 +26,7 @@ const hashResetCode = (resetCode, userId) => {
     .createHmac('sha256', secret)
     .update(resetCode)
     .digest('hex');
+
   return hash;
 };
 

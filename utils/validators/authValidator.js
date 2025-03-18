@@ -7,11 +7,17 @@ const validatorMiddleware = require('../../middlewares/validatorMiddleware');
 
 const signupValidator = [
   // 1- rules
-  check('name')
+  check('firstName')
     .notEmpty()
-    .withMessage('User name required')
+    .withMessage('User firstName required')
     .isLength({ min: 3 })
-    .withMessage('Too short User name'),
+    .withMessage('Too short User firstName'),
+
+  check('lastName')
+    .notEmpty()
+    .withMessage('User lastName required')
+    .isLength({ min: 3 })
+    .withMessage('Too short User lastName'),
 
   check('email')
     .notEmpty()

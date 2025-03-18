@@ -74,7 +74,7 @@ const userSchema = new mongoose.Schema(
         // i.e => "Home"  -  "Work"
         alias: {
           type: String,
-          unique: [true, 'Address alias must be unique'],
+          // unique: [true, 'Address alias must be unique'],
         },
         country: {
           type: String,
@@ -140,6 +140,10 @@ userSchema.pre('save', async function (next) {
 });
 
 // Mongoose Virtuals
+
+userSchema.virtual('fullName').get(function () {
+  return `${this.firstName}  ${this.lastName}`;
+});
 
 userSchema.virtual('profileImageUrl').get(function () {
   // If there's an profileImage filename, generate the full URL, otherwise return null

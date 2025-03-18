@@ -132,10 +132,14 @@ const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await UserModel.findOne({ email });
 
+  if (!user) {
+    return next(new APIError(`Invalid email or password`, 401));
+  }
+
   // 2- Check if users exists and password is correct
   const isMatch = await bcrypt.compare(password, user.password);
 
-  if (!user || !isMatch) {
+  if (!isMatch) {
     return next(new APIError(`Invalid email or password`, 401));
   }
 
