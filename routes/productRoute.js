@@ -28,25 +28,28 @@ const router = express.Router();
 
 // Nested Route
 
-// POST /producst/asfsfdfdafdfdf/reviews
-// GET /producst/asfsfdfdafdfdf/reviews
+// POST /products/asfsfdfdafdfdf/reviews
+// GET /products/asfsfdfdafdfdf/reviews
 
 // Get Specific Review on a specific product
-// GET /producst/asfsfdfdafdfdf/reviews/adsadsadsdsad
+// GET /products/asfsfdfdafdfdf/reviews/adsadsadsdsad
 router.use('/:productId/reviews', reviewRoute);
 
 router.post(
   '/',
   protect,
-  allowedTo('admin', 'manager'),
+  allowedTo('admin'),
   uploadProductImages,
   resizeProductImages,
   createProductValidator,
   setSlugToBody,
   createProduct
 );
+
 router.get('/', getproducts);
+
 router.get('/:id', getProductValidator, getProductById);
+
 router.put(
   '/:id',
   protect,
@@ -58,6 +61,7 @@ router.put(
   updateProductById,
   deleteProductImages
 );
+
 router.delete(
   '/:id',
   protect,

@@ -47,7 +47,7 @@ const reviewSchema = new mongoose.Schema(
 
 // Populate User on Review
 reviewSchema.pre(/^find/, function (next) {
-  this.populate({ path: 'user', select: 'name' });
+  this.populate({ path: 'user', select: 'firstName lastName profileImage' });
   next();
 });
 
