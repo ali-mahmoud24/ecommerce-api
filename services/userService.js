@@ -6,7 +6,7 @@ const UserModel = require('../models/userModel');
 const factory = require('./handlerFactory');
 
 const APIError = require('../utils/apiError');
-const { createToken } = require('../utils/createToken');
+const { createToken } = require('../utils/auth');
 
 const { uploadSingleImage } = require('../middlewares/uploadImageMiddleware');
 const { resizeImage } = require('../middlewares/resizeImageMiddleware');
@@ -119,7 +119,7 @@ const changeUserPassword = asyncHandler(async (req, res, next) => {
 // @ route  DELETE    /api/v1/users/:id
 // @ access Private
 
-const deleteUserById = factory.deleteOne(UserModel, 'User', 'profileImage');
+const deleteUserById = factory.deleteOne(UserModel, 'profileImage');
 
 // @ desc   Get Logged user data
 // @ route  GET    /api/v1/users/loggedUser
@@ -180,7 +180,8 @@ const updateLoggedUserData = asyncHandler(async (req, res, next) => {
   const updatedUser = await UserModel.findByIdAndUpdate(
     id,
     {
-      name: req.body.name,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       email: req.body.email,
       phone: req.body.phone,
       profileImage: req.body.profileImage,
