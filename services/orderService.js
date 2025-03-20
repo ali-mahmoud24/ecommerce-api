@@ -122,13 +122,13 @@ const checkoutSession = asyncHandler(async (req, res, next) => {
 // @route POST /api/v1/orders
 // @access Protect/User-Admin
 
-const getOrders = factory.getAll(OrderModel, 'Order');
+const getOrders = factory.getAll(OrderModel);
 
 // @desc Get a specific Order
 // @route POST /api/v1/orders/:id
 // @access Protect/User-Admin
 
-const getOrderById = factory.getOneById(OrderModel, 'Order');
+const getOrderById = factory.getOneById(OrderModel);
 
 // @desc Update Order paid status
 // @route PUT /api/v1/orders/:id/pay
