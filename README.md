@@ -38,13 +38,11 @@ NODE_ENV=development
 BASE_URL=http://localhost:8000
 
 # Database
-
 DB_URI=mongodb+srv://[DB_USER]:[DB_PASSWORD]@cluster0.weu8p.mongodb.net/nodejs-ecommerce
 
 # JWT
 JWT_SECRET_KEY=the-secret-key-jwt-in
 JWT_EXPIRE_TIME=90d
-
 
 # Email Settings
 EMAIL_HOST=*************
@@ -69,6 +67,27 @@ npm run start:prod
 
 ---
 
+## 📸 File Uploads Directory  
+
+If you experience issues with missing upload directories, create the `uploads` folder manually.  
+Run the following command:
+
+```bash
+mkdir -p uploads/{brands,categories,products,users}
+```
+
+This will generate the necessary nested folders:
+
+📁 `uploads/`  
+ ├── 📂 `brands/` (Stores brand images)  
+ ├── 📂 `categories/` (Stores category images)  
+ ├── 📂 `products/` (Stores product images)  
+ ├── 📂 `users/` (Stores user profile images)  
+
+Make sure to keep this folder **excluded from Git** to prevent accidental uploads.
+
+---
+
 ## 🔥 API Endpoints
 🔹 Full API documentation is available via **Postman Collection**
 - https://documenter.getpostman.com/view/31557274/2sAYkDP1Sw
@@ -90,10 +109,10 @@ npm run start:prod
 - **CORS** with configured allowed origins  
 - **XSS Protection**  
 - **Rate Limiting & HPP Prevention**  
-- **Global Error Handling Middleware**  
+- **Global Error Handling Middleware**
 
 ---
 
-## 📸 Image Uploads  
-- **Multer** for handling file uploads  
-- **Sharp** for optimizing images  
+## 📸 Image Uploads
+- **Multer** for handling file uploads
+- **Sharp** for optimizing images
