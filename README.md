@@ -29,7 +29,7 @@ npm install
 ```
 
 ### 3️⃣ Configure Environment Variables  
-Create a `.env` file in the root directory and add the required configurations:  
+Create a `config.env` file in the root directory and add the required configurations:  
 ```env
 # App Configurations
 PORT=8000
@@ -39,6 +39,11 @@ BASE_URL=http://localhost:8000
 
 # Database
 DB_URI=mongodb+srv://[DB_USER]:[DB_PASSWORD]@cluster0.weu8p.mongodb.net/nodejs-ecommerce
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=*************
+CLOUDINARY_API_KEY=************
+CLOUDINARY_API_SECRET=*********
 
 # JWT
 JWT_SECRET_KEY=the-secret-key-jwt-in
