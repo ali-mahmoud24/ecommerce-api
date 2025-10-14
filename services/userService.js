@@ -18,7 +18,7 @@ const {
 
 const uploadUserImage = uploadSingleImage('profileImage');
 const resizeUserImage = resizeImage('users', 'user', 'profileImage');
-const deleteUserImage = deleteImageMiddleware('users');
+const deleteUserImage = deleteImageMiddleware();
 
 const setSlugToBody = (req, res, next) => {
   if (req.body.name) {

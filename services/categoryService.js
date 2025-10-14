@@ -12,7 +12,7 @@ const factory = require('./handlerFactory');
 // Middlewares
 const uploadCategoryImage = uploadSingleImage('image');
 const resizeCategoryImage = resizeImage('categories', 'category', 'image');
-const deleteCategoryImage = deleteImageMiddleware('categories');
+const deleteCategoryImage = deleteImageMiddleware();
 
 const setSlugToBody = (req, res, next) => {
   if (req.body.name) {

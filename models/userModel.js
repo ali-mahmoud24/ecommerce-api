@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const APIError = require('../utils/apiError');
+const getImageUrl = require('../utils/getImageUrl');
 
 // 1- Create Schema
 const userSchema = new mongoose.Schema(
@@ -146,9 +147,9 @@ userSchema.virtual('fullName').get(function () {
 });
 
 userSchema.virtual('profileImageUrl').get(function () {
-  // If there's an profileImage filename, generate the full URL, otherwise return null
+  // If there's an image filename, generate the full URL, otherwise return null
   if (this.profileImage) {
-    return `${process.env.BASE_URL}/users/${this.profileImage}`;
+    return getImageUrl(this.profileImage, 'users');
   }
   return null; // If no image exists
 });

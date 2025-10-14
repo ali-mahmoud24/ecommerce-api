@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const getImageUrl = require('../utils/getImageUrl');
 
 // 1- Create Schema
 const brandSchema = new mongoose.Schema(
@@ -41,7 +42,7 @@ const brandSchema = new mongoose.Schema(
 brandSchema.virtual('imageUrl').get(function () {
   // If there's an image filename, generate the full URL, otherwise return null
   if (this.image) {
-    return `${process.env.BASE_URL}/brands/${this.image}`;
+    return getImageUrl(this.image, 'brands');
   }
   return null; // If no image exists
 });

@@ -13,7 +13,7 @@ const {
 
 const uploadBrandImage = uploadSingleImage('image');
 const resizeBrandImage = resizeImage('brands', 'brand', 'image');
-const deleteBrandImage = deleteImageMiddleware('brands');
+const deleteBrandImage = deleteImageMiddleware();
 
 const setSlugToBody = (req, res, next) => {
   if (req.body.name) {

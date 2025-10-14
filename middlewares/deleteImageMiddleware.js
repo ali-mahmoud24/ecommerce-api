@@ -1,58 +1,32 @@
-const fs = require('fs/promises');
-const path = require('path');
-
 const asyncHandler = require('express-async-handler');
-
+const cloudinary = require('../config/cloudinary');
 const APIError = require('../utils/apiError');
 
-const getImagePath = (folderName, filename) => {
-  const imagePath = path.join(__dirname, '..', 'uploads', folderName, filename); // Adjust path
-
-  return imagePath;
-};
-
-const deleteImageMiddleware = (folderName) =>
+const deleteImageMiddleware = () =>
   asyncHandler(async (req, res, next) => {
-    const { filename } = res.locals; // We'll use res.locals to get the document from the previous middleware
+    const { image } = res.locals; // image = Cloudinary public_id
 
-    if (filename) {
-      const imagePath = getImagePath(folderName, filename);
-      // Delete the image from the file system
+    if (!image) return next();
 
-      const error = await fs.unlink(imagePath);
-      if (error) {
-        return next(new APIError(`Error deleting associated image`, 500));
-      }
+    try {
+      await cloudinary.uploader.destroy(image);
+      next();
+    } catch (error) {
+      next(new APIError('Error deleting image from Cloudinary', 500));
     }
   });
 
-const deleteMixOfImagesMiddleware = (folderName) =>
+const deleteMixOfImagesMiddleware = () =>
   asyncHandler(async (req, res, next) => {
-    const { filename } = res.locals;
-    const { filenames } = res.locals;
+    const { images } = res.locals; // array of Cloudinary public_ids
 
-    if (filename) {
-      const imagePath = getImagePath(folderName, filename);
+    if (!images.length) return next();
 
-      // Delete the image from the file system
-      const error = await fs.unlink(imagePath);
-      if (error) {
-        return next(new APIError(`Error deleting associated image`, 500));
-      }
-    }
-
-    if (filenames) {
-      await Promise.all(
-        filenames.forEach(async (file) => {
-          const imagePath = getImagePath(folderName, file);
-
-          // Delete the image from the file system
-          const error = await fs.unlink(imagePath);
-          if (error) {
-            return next(new APIError(`Error deleting associated image`, 500));
-          }
-        })
-      );
+    try {
+      await Promise.all(images.map((id) => cloudinary.uploader.destroy(id)));
+      next();
+    } catch (error) {
+      next(new APIError('Error deleting multiple images from Cloudinary', 500));
     }
   });
 

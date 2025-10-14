@@ -37,7 +37,7 @@ const createSubcategory = factory.createOne(SubcategoryModel);
 // @ route  GET    /api/v1/subcategories
 // @ access Public
 
-const getSubcategories = factory.getAll(SubcategoryModel);
+const getSubcategories = factory.getAll(SubcategoryModel, 'category');
 
 // @ desc   Get specific Subcategory by id
 // @ route  GET    /api/v1/subcategories/:id

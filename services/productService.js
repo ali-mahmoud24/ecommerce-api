@@ -21,7 +21,7 @@ const resizeProductImages = resizeMixOfImages(
   'images'
 );
 
-const deleteProductImages = deleteMixOfImagesMiddleware('products');
+const deleteProductImages = deleteMixOfImagesMiddleware();
 
 const setSlugToBody = (req, res, next) => {
   if (req.body.title) {

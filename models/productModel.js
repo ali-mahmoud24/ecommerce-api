@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const getImageUrl = require('../utils/getImageUrl');
 
 // 1- Create Schema
 const productSchema = new mongoose.Schema(
@@ -102,18 +103,19 @@ const productSchema = new mongoose.Schema(
 productSchema.virtual('imageCoverUrl').get(function () {
   // If there's an image filename, generate the full URL, otherwise return null
   if (this.imageCover) {
-    return `${process.env.BASE_URL}/products/${this.imageCover}`;
+    return getImageUrl(this.imageCover, 'products');
   }
   return null; // If no image exists
 });
 
-productSchema.virtual('imagesUrl').get(function () {
+productSchema.virtual('imageUrls').get(function () {
   // If there's an image filename, generate the full URL, otherwise return null
   if (this.images) {
-    const imagesUrl = this.images.map(
-      (image) => `${process.env.BASE_URL}/products/${image}`
+    const imageUrls = this.images.map((image) =>
+      getImageUrl(image, 'products')
     );
-    return imagesUrl;
+
+    return imageUrls;
   }
   return null; // If no image exists
 });

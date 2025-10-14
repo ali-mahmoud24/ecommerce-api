@@ -13,7 +13,7 @@ const { xss } = require('express-xss-sanitizer');
 const APIError = require('./utils/apiError');
 const globalError = require('./middlewares/errorMiddleware');
 
-const dbConnection = require('./config/databse');
+const dbConnection = require('./config/database');
 
 const mountRoutes = require('./routes');
 
