@@ -3,7 +3,7 @@ const slugify = require('slugify');
 const { uploadSingleImage } = require('../middlewares/uploadImageMiddleware');
 const { resizeImage } = require('../middlewares/resizeImageMiddleware');
 const {
-  deleteImageMiddleware,
+  deleteCloudinaryImages,
 } = require('../middlewares/deleteImageMiddleware');
 
 const CategoryModel = require('../models/categoryModel');
@@ -12,7 +12,7 @@ const factory = require('./handlerFactory');
 // Middlewares
 const uploadCategoryImage = uploadSingleImage('image');
 const resizeCategoryImage = resizeImage('categories', 'category', 'image');
-const deleteCategoryImage = deleteImageMiddleware();
+const deleteCategoryImage = deleteCloudinaryImages();
 
 const setSlugToBody = (req, res, next) => {
   if (req.body.name) {
@@ -45,7 +45,7 @@ const getCategoryById = factory.getOneById(CategoryModel);
 // @ route  PUT    /api/v1/categories/:id
 // @ access Private
 
-const updateCategoryById = factory.updateOneById(CategoryModel, 'image');
+const updateCategoryById = factory.updateOneWithImage(CategoryModel, 'image');
 
 // @ desc   Delete specific category
 // @ route  DELETE    /api/v1/categories/:id

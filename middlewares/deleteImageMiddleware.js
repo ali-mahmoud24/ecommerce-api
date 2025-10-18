@@ -18,19 +18,50 @@ const deleteImageMiddleware = () =>
 
 const deleteMixOfImagesMiddleware = () =>
   asyncHandler(async (req, res, next) => {
-    const { images } = res.locals; // array of Cloudinary public_ids
-
-    if (!images.length) return next();
+    const images = res.locals.images || [];
+    const { image } = res.locals; // single image (e.g., imageCover)
 
     try {
-      await Promise.all(images.map((id) => cloudinary.uploader.destroy(id)));
+      if (Array.isArray(images) && images.length > 0) {
+        await Promise.all(
+          images.filter(Boolean).map((id) => cloudinary.uploader.destroy(id))
+        );
+      }
+
+      if (image) {
+        await cloudinary.uploader.destroy(image);
+      }
+
       next();
     } catch (error) {
-      next(new APIError('Error deleting multiple images from Cloudinary', 500));
+      next(new APIError('Error deleting images from Cloudinary', 500));
     }
+  });
+
+const deleteCloudinaryImages = () =>
+  asyncHandler(async (req, res, next) => {
+    const { image, images } = res.locals;
+
+    try {
+      if (Array.isArray(images) && images.length > 0) {
+        await Promise.all(
+          images.filter(Boolean).map((id) => cloudinary.uploader.destroy(id))
+        );
+      }
+      if (image) {
+        await cloudinary.uploader.destroy(image);
+      }
+    } catch (error) {
+      next(new APIError('Error deleting image from Cloudinary', 500));
+    }
+
+    console.log('done');
+
+    next();
   });
 
 module.exports = {
   deleteImageMiddleware,
   deleteMixOfImagesMiddleware,
+  deleteCloudinaryImages,
 };

@@ -11,14 +11,14 @@ const { createToken } = require('../utils/auth');
 const { uploadSingleImage } = require('../middlewares/uploadImageMiddleware');
 const { resizeImage } = require('../middlewares/resizeImageMiddleware');
 const {
-  deleteImageMiddleware,
+  deleteCloudinaryImages,
 } = require('../middlewares/deleteImageMiddleware');
 
 // Middlewares
 
 const uploadUserImage = uploadSingleImage('profileImage');
 const resizeUserImage = resizeImage('users', 'user', 'profileImage');
-const deleteUserImage = deleteImageMiddleware();
+const deleteUserImage = deleteCloudinaryImages();
 
 const setSlugToBody = (req, res, next) => {
   if (req.body.name) {
@@ -65,7 +65,6 @@ const updateUserById = asyncHandler(async (req, res, next) => {
     {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      slug: req.body.slug,
       phone: req.body.phone,
       email: req.body.email,
       profileImage: req.body.profileImage,
@@ -79,7 +78,7 @@ const updateUserById = asyncHandler(async (req, res, next) => {
 
   // If there is an image in the request and the document has an existing image, delete the old image
   if (req.file && document.profileImage) {
-    res.locals.filename = document.profileImage;
+    res.locals.image = document.profileImage;
     next();
   }
 

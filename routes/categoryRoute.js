@@ -23,6 +23,7 @@ const {
 const { protect, allowedTo } = require('../services/authService');
 
 const subcategoryRoute = require('./subcategoryRoute');
+const { sendUpdatedDocResponse } = require('../middlewares/updateResponse');
 
 const router = express.Router();
 
@@ -50,7 +51,8 @@ router.put(
   updateCategoryValidator,
   setSlugToBody,
   updateCategoryById,
-  deleteCategoryImage
+  deleteCategoryImage,
+  sendUpdatedDocResponse
 );
 router.delete(
   '/:id',

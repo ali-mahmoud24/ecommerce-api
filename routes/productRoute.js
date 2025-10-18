@@ -24,6 +24,8 @@ const reviewRoute = require('./reviewRoute');
 
 const { protect, allowedTo } = require('../services/authService');
 
+const { sendUpdatedDocResponse } = require('../middlewares/updateResponse');
+
 const router = express.Router();
 
 // Nested Route
@@ -37,8 +39,8 @@ router.use('/:productId/reviews', reviewRoute);
 
 router.post(
   '/',
-  protect,
-  allowedTo('admin'),
+  // protect,
+  // allowedTo('admin'),
   uploadProductImages,
   resizeProductImages,
   createProductValidator,
@@ -52,20 +54,21 @@ router.get('/:id', getProductValidator, getProductById);
 
 router.put(
   '/:id',
-  protect,
-  allowedTo('admin', 'manager'),
+  // protect,
+  // allowedTo('admin', 'manager'),
   uploadProductImages,
   resizeProductImages,
   updateProductValidator,
   setSlugToBody,
   updateProductById,
-  deleteProductImages
+  deleteProductImages,
+  sendUpdatedDocResponse
 );
 
 router.delete(
   '/:id',
-  protect,
-  allowedTo('admin'),
+  // protect,
+  // allowedTo('admin'),
   deleteProductValidator,
   deleteProductById,
   deleteProductImages

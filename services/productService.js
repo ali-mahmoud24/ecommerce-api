@@ -6,7 +6,7 @@ const factory = require('./handlerFactory');
 const { uploadMixOfImages } = require('../middlewares/uploadImageMiddleware');
 const { resizeMixOfImages } = require('../middlewares/resizeImageMiddleware');
 const {
-  deleteMixOfImagesMiddleware,
+  deleteCloudinaryImages,
 } = require('../middlewares/deleteImageMiddleware');
 
 // Middlewares
@@ -21,7 +21,7 @@ const resizeProductImages = resizeMixOfImages(
   'images'
 );
 
-const deleteProductImages = deleteMixOfImagesMiddleware();
+const deleteProductImages = deleteCloudinaryImages();
 
 const setSlugToBody = (req, res, next) => {
   if (req.body.title) {
@@ -54,12 +54,18 @@ const getProductById = factory.getOneById(ProductModel, 'reviews');
 // @ route  PUT    /api/v1/products/:id
 // @ access Private
 
-const updateProductById = factory.updateOneById(
+const updateProductById = factory.updateOneWithMultipleImages(
   ProductModel,
-  'Product',
   'imageCover',
   'images'
 );
+
+// const updateProductById = factory.updateOneById(
+//   ProductModel,
+//   'Product',
+//   'imageCover',
+//   'images'
+// );
 
 // @ desc   Delete specific Product
 // @ route  DELETE    /api/v1/products/:id

@@ -24,22 +24,23 @@ const {
   setSlugToBody,
   uploadUserImage,
   resizeUserImage,
-  deleteUserImage,
 
   getLoggedUserData,
   changeLoggedUserPassword,
   updateLoggedUserData,
   deactivateLoggedUser,
   reactivateUserAccount,
+  deleteUserImage,
 } = require('../services/userService');
 
 const { protect, allowedTo } = require('../services/authService');
+const { sendUpdatedDocResponse } = require('../middlewares/updateResponse');
 
 const router = express.Router();
 
 router.post('/activateAccount', loginValidator, reactivateUserAccount);
 
-router.use(protect);
+// router.use(protect);
 
 // USER
 
@@ -55,13 +56,14 @@ router.put(
   resizeUserImage,
   updateLoggedUserValidator,
   updateLoggedUserData,
-  deleteUserImage
+  deleteUserImage,
+  sendUpdatedDocResponse
 );
 router.delete('/deactivateMe', deactivateLoggedUser);
 
 // ADMIN
 // Apply to all upcoming routes
-router.use(allowedTo('admin'));
+// router.use(allowedTo('admin'));
 
 router.post(
   '/',
@@ -82,7 +84,8 @@ router.put(
   updateUserValidator,
   setSlugToBody,
   updateUserById,
-  deleteUserImage
+  deleteUserImage,
+  sendUpdatedDocResponse
 );
 
 router.delete('/:id', deleteUserValidator, deleteUserById, deleteUserImage);

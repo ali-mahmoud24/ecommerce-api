@@ -6,14 +6,14 @@ const factory = require('./handlerFactory');
 const { uploadSingleImage } = require('../middlewares/uploadImageMiddleware');
 const { resizeImage } = require('../middlewares/resizeImageMiddleware');
 const {
-  deleteImageMiddleware,
+  deleteCloudinaryImages,
 } = require('../middlewares/deleteImageMiddleware');
 
 // Middlewares
 
 const uploadBrandImage = uploadSingleImage('image');
 const resizeBrandImage = resizeImage('brands', 'brand', 'image');
-const deleteBrandImage = deleteImageMiddleware();
+const deleteBrandImage = deleteCloudinaryImages();
 
 const setSlugToBody = (req, res, next) => {
   if (req.body.name) {
@@ -46,7 +46,7 @@ const getBrandById = factory.getOneById(BrandModel);
 // @ route  PUT    /api/v1/brands/:id
 // @ access Private
 
-const updateBrandById = factory.updateOneById(BrandModel, 'image');
+const updateBrandById = factory.updateOneWithImage(BrandModel, 'image');
 
 // @ desc   Delete specific Brand
 // @ route  DELETE    /api/v1/brands/:id

@@ -21,6 +21,7 @@ const {
 } = require('../services/brandService');
 
 const { protect, allowedTo } = require('../services/authService');
+const { sendUpdatedDocResponse } = require('../middlewares/updateResponse');
 
 const router = express.Router();
 
@@ -45,7 +46,8 @@ router.put(
   updateBrandValidator,
   setSlugToBody,
   updateBrandById,
-  deleteBrandImage
+  deleteBrandImage,
+  sendUpdatedDocResponse
 );
 router.delete(
   '/:id',
