@@ -67,14 +67,28 @@ const getOneById = (Model, populateOptions) =>
     res.status(200).json({ data: document });
   });
 
-const updateOneById = (Model, imageField, multipleImagesField) =>
+const updateOneById = (Model) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
 
-    const document = await Model.findById(id);
+    const document = await Model.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!document) {
-      return next(new APIError(`No ${Model.modelName} for this Id ${id}`, 404));
+      return next(new APIError(`No ${Model.modelName} found for this ID`, 404));
+    }
+
+    res.status(200).json({ data: document });
+  });
+
+const updateOneWithImage = (Model, imageField = 'image') =>
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const document = await Model.findById(id);
+    if (!document) {
+      return next(new APIError(`No ${Model.modelName} found for this ID`, 404));
     }
 
     const updatedDocument = await Model.findByIdAndUpdate(id, req.body, {
@@ -82,30 +96,89 @@ const updateOneById = (Model, imageField, multipleImagesField) =>
       runValidators: true,
     });
 
-    // Trigger "save" event when update document
     await updatedDocument.save();
 
-    // To delete old Mix of images
-    if (req.files && imageField && multipleImagesField) {
+    //  Only mark old image if a new one is uploaded
+    if (req.file && document[imageField]) {
+      res.locals.image = document[imageField];
+    }
+
+    res.locals.updatedDocument = updatedDocument;
+    next();
+  });
+
+const updateOneWithMultipleImages = (
+  Model,
+  imageField = 'imageCover',
+  multipleImagesField = 'images'
+) =>
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const document = await Model.findById(id);
+    if (!document) {
+      return next(new APIError(`No ${Model.modelName} found for this ID`, 404));
+    }
+
+    const updatedDocument = await Model.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    await updatedDocument.save();
+
+    //  Capture old images only if new ones uploaded
+    if (req.files) {
       if (req.files[imageField]) {
-        res.locals.filename = document[imageField];
+        res.locals.image = document[imageField];
       }
       if (req.files[multipleImagesField]) {
-        res.locals.filenames = document[multipleImagesField];
+        res.locals.images = document[multipleImagesField];
       }
-
-      // Proceed to the next middleware (image deletion)
-      next();
     }
 
-    // If there is an image in the request and the document has an existing image, delete the old image
-    if (req.file && document[imageField] && !multipleImagesField) {
-      res.locals.filename = document[imageField];
-      next();
-    }
-
-    res.status(200).json({ data: updatedDocument });
+    res.locals.updatedDocument = updatedDocument;
+    next();
   });
+
+// const updateOneById = (Model, imageField, multipleImagesField) =>
+//   asyncHandler(async (req, res, next) => {
+//     const { id } = req.params;
+
+//     const document = await Model.findById(id);
+//     if (!document) {
+//       return next(new APIError(`No ${Model.modelName} for this Id ${id}`, 404));
+//     }
+
+//     const updatedDocument = await Model.findByIdAndUpdate(id, req.body, {
+//       new: true,
+//       runValidators: true,
+//     });
+
+//     // Trigger "save" hooks if needed (slug updates, etc.)
+//     await updatedDocument.save();
+
+//     //  Case 1: multiple or single images uploaded
+//     if (req.files && imageField && multipleImagesField) {
+//       if (req.files[imageField]) {
+//         res.locals.image = document[imageField];
+//       }
+//       if (req.files[multipleImagesField]) {
+//         res.locals.images = document[multipleImagesField];
+//       }
+
+//       // Stop here, pass control to next middleware (image deletion)
+//       return next();
+//     }
+
+//   //  Case 2: single image only
+//   if (req.file && document[imageField] && !multipleImagesField) {
+//     res.locals.image = document[imageField];
+//     return next();
+//   }
+
+//   //  Case 3: no images were updated
+//   res.status(200).json({ data: updatedDocument });
+// });
 
 const deleteOne = (Model, imageField, multipleImagesField) =>
   asyncHandler(async (req, res, next) => {
@@ -152,5 +225,7 @@ module.exports = {
   getAll,
   getOneById,
   updateOneById,
+  updateOneWithImage,
+  updateOneWithMultipleImages,
   deleteOne,
 };
