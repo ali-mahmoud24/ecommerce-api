@@ -86,8 +86,12 @@ const updateUserValidator = [
     .optional()
     .isEmail()
     .withMessage('User email Invalid')
-    .custom(async (value) => {
-      const user = await UserModel.findOne({ email: value });
+    .custom(async (value, { req }) => {
+      const { id } = req.params;
+      const user = await UserModel.findOne({
+        email: value,
+        _id: { $ne: id },
+      });
 
       if (user) {
         throw new APIError(`This email already exists: ${value}`, 400);

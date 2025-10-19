@@ -50,18 +50,21 @@ const updateCouponValidator = [
     .optional()
     .isLength({ min: 3, max: 100 })
     .withMessage('Coupon name must be between (3 - 100) characters')
-    // .custom(async (value) => {
-    //   const coupon = await CouponModel.findOne({ name: value });
+    .custom(async (value, { req }) => {
+      const { id } = req.params;
+      const coupon = await CouponModel.findOne({
+        name: value,
+        _id: { $ne: id },
+      });
 
-    //   if (coupon) {
-    //     throw new APIError(
-    //       `Coupon with this name already exists: ${value}`,
-    //       400
-    //     );
-    //   }
-    //   return true;
-    // })
-    ,
+      if (coupon) {
+        throw new APIError(
+          `Coupon with this name already exists: ${value}`,
+          400
+        );
+      }
+      return true;
+    }),
 
   check('expiryDate')
     .optional()
