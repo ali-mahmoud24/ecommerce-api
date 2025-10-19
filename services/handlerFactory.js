@@ -190,34 +190,25 @@ const deleteOne = (Model, imageField, multipleImagesField) =>
       return next(new APIError(`No ${Model.modelName} for this Id ${id}`, 404));
     }
 
-    if (document) {
-      if (Model.modelName === 'Review') {
-        const productId = document.product;
-
-        // Recalculate average ratings and quantity for the product
-        await Model.calculateAverageRatingsAndQuantity(productId);
-      }
+    // Special case: review model recalculation
+    if (Model.modelName === 'Review') {
+      const productId = document.product;
+      await Model.calculateAverageRatingsAndQuantity(productId);
     }
 
-    // To delete single image
-    if (imageField && !multipleImagesField) {
-      // Store the document in res.locals so it can be accessed in subsequent middleware
-      res.locals.filename = document[imageField];
-
-      // Proceed to the next middleware (image deletion)
-      next();
+    // Attach Cloudinary info to res.locals for later deletion
+    if (imageField) {
+      res.locals.image = document[imageField];
+    }
+    if (multipleImagesField) {
+      res.locals.images = document[multipleImagesField];
     }
 
-    // To delete Mix of images
-    if (imageField && multipleImagesField) {
-      res.locals.filename = document[imageField];
-      res.locals.filenames = document[multipleImagesField];
+    // Save deleted doc if you want to include in response (optional)
+    res.locals.deletedDocument = document;
 
-      // Proceed to the next middleware (image deletion)
-      next();
-    }
-
-    res.status(204).json();
+    // Don't send a response yet → wait for Cloudinary cleanup
+    next();
   });
 
 module.exports = {

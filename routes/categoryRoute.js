@@ -24,6 +24,7 @@ const { protect, allowedTo } = require('../services/authService');
 
 const subcategoryRoute = require('./subcategoryRoute');
 const { sendUpdatedDocResponse } = require('../middlewares/updateResponse');
+const { sendDeleteResponse } = require('../middlewares/deleteResponse');
 
 const router = express.Router();
 
@@ -60,7 +61,8 @@ router.delete(
   // allowedTo('admin'),
   deleteCategoryValidator,
   deleteCategoryById,
-  deleteCategoryImage
+  deleteCategoryImage,
+  sendDeleteResponse
 );
 
 module.exports = router;

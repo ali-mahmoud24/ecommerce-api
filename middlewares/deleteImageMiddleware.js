@@ -55,8 +55,6 @@ const deleteCloudinaryImages = () =>
       next(new APIError('Error deleting image from Cloudinary', 500));
     }
 
-    console.log('done');
-
     next();
   });
 

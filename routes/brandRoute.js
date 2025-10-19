@@ -22,6 +22,7 @@ const {
 
 const { protect, allowedTo } = require('../services/authService');
 const { sendUpdatedDocResponse } = require('../middlewares/updateResponse');
+const { sendDeleteResponse } = require('../middlewares/deleteResponse');
 
 const router = express.Router();
 
@@ -55,7 +56,8 @@ router.delete(
   // allowedTo('admin'),
   deleteBrandValidator,
   deleteBrandById,
-  deleteBrandImage
+  deleteBrandImage,
+  sendDeleteResponse
 );
 
 module.exports = router;

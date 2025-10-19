@@ -35,6 +35,7 @@ const {
 
 const { protect, allowedTo } = require('../services/authService');
 const { sendUpdatedDocResponse } = require('../middlewares/updateResponse');
+const { sendDeleteResponse } = require('../middlewares/deleteResponse');
 
 const router = express.Router();
 
@@ -88,7 +89,13 @@ router.put(
   sendUpdatedDocResponse
 );
 
-router.delete('/:id', deleteUserValidator, deleteUserById, deleteUserImage);
+router.delete(
+  '/:id',
+  deleteUserValidator,
+  deleteUserById,
+  deleteUserImage,
+  sendDeleteResponse
+);
 
 router.patch(
   '/changePassword/:id',
