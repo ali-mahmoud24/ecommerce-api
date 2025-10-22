@@ -38,8 +38,8 @@ router.get('/', createFilterObject, getSubcategories);
 router.get('/:id', getSubcategoryValidator, getSubcategoryById);
 router.put(
   '/:id',
-  // protect,
-  // allowedTo('admin', 'manager'),
+  protect,
+  allowedTo('admin', 'manager'),
   updateSubcategoryValidator,
   setSlugToBody,
   updateSubcategoryById

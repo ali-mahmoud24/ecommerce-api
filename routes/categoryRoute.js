@@ -33,8 +33,8 @@ router.use('/:categoryId/subcategories', subcategoryRoute);
 
 router.post(
   '/',
-  // protect,
-  // allowedTo('admin', 'manager'),
+  protect,
+  allowedTo('admin', 'manager'),
   uploadCategoryImage,
   resizeCategoryImage,
   createCategoryValidator,
@@ -45,8 +45,8 @@ router.get('/', getCategories);
 router.get('/:id', getCategoryValidator, getCategoryById);
 router.put(
   '/:id',
-  // protect,
-  // allowedTo('admin', 'manager'),
+  protect,
+  allowedTo('admin', 'manager'),
   uploadCategoryImage,
   resizeCategoryImage,
   updateCategoryValidator,
@@ -57,8 +57,8 @@ router.put(
 );
 router.delete(
   '/:id',
-  // protect,
-  // allowedTo('admin'),
+  protect,
+  allowedTo('admin'),
   deleteCategoryValidator,
   deleteCategoryById,
   deleteCategoryImage,

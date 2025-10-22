@@ -19,7 +19,7 @@ const { protect, allowedTo } = require('../services/authService');
 
 const router = express.Router();
 
-// router.use(protect, allowedTo('admin'));
+router.use(protect, allowedTo('admin'));
 
 router.post('/', createCouponValidator, createCoupon);
 router.get('/', getCoupons);

@@ -28,8 +28,8 @@ const router = express.Router();
 
 router.post(
   '/',
-  // protect,
-  // allowedTo('admin', 'manager'),
+  protect,
+  allowedTo('admin', 'manager'),
   uploadBrandImage,
   resizeBrandImage,
   createBrandValidator,
@@ -40,8 +40,8 @@ router.get('/', getBrands);
 router.get('/:id', getBrandValidator, getBrandById);
 router.put(
   '/:id',
-  // protect,
-  // allowedTo('admin', 'manager'),
+  protect,
+  allowedTo('admin', 'manager'),
   uploadBrandImage,
   resizeBrandImage,
   updateBrandValidator,
@@ -52,8 +52,8 @@ router.put(
 );
 router.delete(
   '/:id',
-  // protect,
-  // allowedTo('admin'),
+  protect,
+  allowedTo('admin'),
   deleteBrandValidator,
   deleteBrandById,
   deleteBrandImage,

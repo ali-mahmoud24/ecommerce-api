@@ -14,7 +14,7 @@ const { protect, allowedTo } = require('../services/authService');
 
 const router = express.Router();
 
-// router.use(protect);
+router.use(protect);
 
 router.post('/:cartId', allowedTo('user'), createCashOrder);
 
@@ -22,8 +22,8 @@ router.get('/checkout-session/:cartId', allowedTo('user'), checkoutSession);
 
 router.get(
   '/',
-  // allowedTo('user', 'admin'),
-  // filterOrderForLoggedUsers,
+  allowedTo('user', 'admin'),
+  filterOrderForLoggedUsers,
   getOrders
 );
 

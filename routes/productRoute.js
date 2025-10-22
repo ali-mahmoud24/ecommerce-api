@@ -40,8 +40,8 @@ router.use('/:productId/reviews', reviewRoute);
 
 router.post(
   '/',
-  // protect,
-  // allowedTo('admin'),
+  protect,
+  allowedTo('admin'),
   uploadProductImages,
   resizeProductImages,
   createProductValidator,
@@ -55,8 +55,8 @@ router.get('/:id', getProductValidator, getProductById);
 
 router.put(
   '/:id',
-  // protect,
-  // allowedTo('admin', 'manager'),
+  protect,
+  allowedTo('admin', 'manager'),
   uploadProductImages,
   resizeProductImages,
   updateProductValidator,
@@ -68,8 +68,8 @@ router.put(
 
 router.delete(
   '/:id',
-  // protect,
-  // allowedTo('admin'),
+  protect,
+  allowedTo('admin'),
   deleteProductValidator,
   deleteProductById,
   deleteProductImages,

@@ -41,7 +41,7 @@ const router = express.Router();
 
 router.post('/activateAccount', loginValidator, reactivateUserAccount);
 
-// router.use(protect);
+router.use(protect);
 
 // USER
 
@@ -64,7 +64,7 @@ router.delete('/deactivateMe', deactivateLoggedUser);
 
 // ADMIN
 // Apply to all upcoming routes
-// router.use(allowedTo('admin'));
+router.use(allowedTo('admin'));
 
 router.post(
   '/',
