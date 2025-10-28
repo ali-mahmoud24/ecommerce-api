@@ -4,9 +4,9 @@ const sharp = require('sharp');
 const streamifier = require('streamifier');
 const cloudinary = require('../config/cloudinary');
 
-const MAIN_FOLDER = 'shoply';
+const MAIN_FOLDER = process.env.CLOUDINARY_MAIN_FOLDER || 'default-folder';
 
-// helper to upload sharp buffer to cloudinary
+//  Helper: Upload buffer to Cloudinary
 const uploadToCloudinary = (buffer, folder, filename) =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -23,6 +23,26 @@ const uploadToCloudinary = (buffer, folder, filename) =>
     streamifier.createReadStream(buffer).pipe(stream);
   });
 
+//  Utility: Optimize image (WebP + fallback JPEG)
+async function processImage(buffer, width, height, quality = 75) {
+  try {
+    // Try WebP first — better compression
+    return await sharp(buffer)
+      .resize(width, height, { fit: 'cover' })
+      .toFormat('webp')
+      .webp({ quality })
+      .toBuffer();
+  } catch (err) {
+    console.error('WebP conversion failed, using JPEG fallback:', err.message);
+    return await sharp(buffer)
+      .resize(width, height, { fit: 'cover' })
+      .toFormat('jpeg')
+      .jpeg({ quality })
+      .toBuffer();
+  }
+}
+
+//  Single Image Resize Middleware
 const resizeImage = (folderName, entityName, imageField) =>
   asyncHandler(async (req, res, next) => {
     if (!req.file) return next();
@@ -30,21 +50,18 @@ const resizeImage = (folderName, entityName, imageField) =>
     const id = uuid();
     const filename = `${entityName}-${id}-${Date.now()}`;
 
-    const buffer = await sharp(req.file.buffer)
-      .resize(600, 600)
-      .toFormat('jpeg')
-      .jpeg({ quality: 90 })
-      .toBuffer();
+    //  Optimized resize + WebP
+    const buffer = await processImage(req.file.buffer, 600, 600, 75);
 
     const uploadResult = await uploadToCloudinary(buffer, folderName, filename);
 
-    // same field names as before
     req.body[imageField] = uploadResult.public_id;
     req.body.imageUrl = uploadResult.secure_url;
 
     next();
   });
 
+//  Multiple Images Resize Middleware
 const resizeMixOfImages = (
   folderName,
   entityName,
@@ -54,25 +71,20 @@ const resizeMixOfImages = (
   asyncHandler(async (req, res, next) => {
     if (!req.files) return next();
 
-    // Single image (e.g. cover)
+    //  Single image (e.g. cover)
     if (req.files[singleImageField]) {
       const image = req.files[singleImageField][0];
       const id = uuid();
       const filename = `${entityName}-${id}-${Date.now()}-cover`;
 
-      const buffer = await sharp(image.buffer)
-        .resize(2000, 1333)
-        .toFormat('jpeg')
-        .jpeg({ quality: 95 })
-        .toBuffer();
-
+      const buffer = await processImage(image.buffer, 2000, 1333, 80);
       const result = await uploadToCloudinary(buffer, folderName, filename);
 
       req.body[singleImageField] = result.public_id;
       req.body.imageUrl = result.secure_url;
     }
 
-    // Multiple images
+    //  Multiple images
     if (req.files[multipleImagesField]) {
       const images = req.files[multipleImagesField];
       const results = await Promise.all(
@@ -80,17 +92,13 @@ const resizeMixOfImages = (
           const id = uuid();
           const filename = `${entityName}-${id}-${Date.now()}-${index + 1}`;
 
-          const buffer = await sharp(image.buffer)
-            .resize(900, 900)
-            .toFormat('jpeg')
-            .jpeg({ quality: 95 })
-            .toBuffer();
-
+          const buffer = await processImage(image.buffer, 900, 900, 75);
           const uploadResult = await uploadToCloudinary(
             buffer,
             folderName,
             filename
           );
+
           return {
             image: uploadResult.public_id,
             imageUrl: uploadResult.secure_url,
