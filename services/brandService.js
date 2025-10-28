@@ -25,31 +25,31 @@ const setSlugToBody = (req, res, next) => {
 };
 
 // @ desc   Create brand
-// @ route  POST    /api/v1/brands
+// @ route  POST    /api/v2/brands
 // @ access Private
 
 const createBrand = factory.createOne(BrandModel);
 
 // @ desc   Get list of brands
-// @ route  GET    /api/v1/brands
+// @ route  GET    /api/v2/brands
 // @ access Public
 
 const getBrands = factory.getAll(BrandModel);
 
 // @ desc   Get specific brand by id
-// @ route  GET    /api/v1/brands/:id
+// @ route  GET    /api/v2/brands/:id
 // @ access Public
 
 const getBrandById = factory.getOneById(BrandModel);
 
 // @ desc   Update specific brand
-// @ route  PUT    /api/v1/brands/:id
+// @ route  PUT    /api/v2/brands/:id
 // @ access Private
 
 const updateBrandById = factory.updateOneWithImage(BrandModel, 'image');
 
 // @ desc   Delete specific Brand
-// @ route  DELETE    /api/v1/brands/:id
+// @ route  DELETE    /api/v2/brands/:id
 // @ access Private
 
 const deleteBrandById = factory.deleteOne(BrandModel, 'image');

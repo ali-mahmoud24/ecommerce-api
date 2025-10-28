@@ -20,7 +20,7 @@ const filterOrderForLoggedUsers = asyncHandler(async (req, res, next) => {
 });
 
 // @desc Create cash Order
-// @route POST /api/v1/orders/cartId
+// @route POST /api/v2/orders/cartId
 // @access Protect/User
 
 const createCashOrder = asyncHandler(async (req, res, next) => {
@@ -70,7 +70,7 @@ const createCashOrder = asyncHandler(async (req, res, next) => {
 });
 
 // @desc Get Checkout session from Stripe and send it as response
-// @route GET /api/v1/orders/checkout-session/cartId
+// @route GET /api/v2/orders/checkout-session/cartId
 // @access Protect/User
 
 const checkoutSession = asyncHandler(async (req, res, next) => {
@@ -119,19 +119,19 @@ const checkoutSession = asyncHandler(async (req, res, next) => {
 });
 
 // @desc Get all Orders
-// @route POST /api/v1/orders
+// @route POST /api/v2/orders
 // @access Protect/User-Admin
 
 const getOrders = factory.getAll(OrderModel);
 
 // @desc Get a specific Order
-// @route POST /api/v1/orders/:id
+// @route POST /api/v2/orders/:id
 // @access Protect/User-Admin
 
 const getOrderById = factory.getOneById(OrderModel);
 
 // @desc Update Order paid status
-// @route PUT /api/v1/orders/:id/pay
+// @route PUT /api/v2/orders/:id/pay
 // @access Protect/Admin
 
 const updateOrderToPaid = asyncHandler(async (req, res, next) => {
@@ -151,7 +151,7 @@ const updateOrderToPaid = asyncHandler(async (req, res, next) => {
 });
 
 // @desc Update Order delivered status
-// @route PUT /api/v1/orders/:id/deliver
+// @route PUT /api/v2/orders/:id/deliver
 // @access Protect/Admin
 
 const updateOrderToDelivered = asyncHandler(async (req, res, next) => {

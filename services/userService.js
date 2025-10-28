@@ -30,25 +30,25 @@ const setSlugToBody = (req, res, next) => {
 };
 
 // @ desc   Create user
-// @ route  POST    /api/v1/users
+// @ route  POST    /api/v2/users
 // @ access Private
 
 const createUser = factory.createOne(UserModel);
 
 // @ desc   Get list of users
-// @ route  GET    /api/v1/users
+// @ route  GET    /api/v2/users
 // @ access Private
 
 const getUsers = factory.getAll(UserModel);
 
 // @ desc   Get specific user by id
-// @ route  GET    /api/v1/users/:id
+// @ route  GET    /api/v2/users/:id
 // @ access Private
 
 const getUserById = factory.getOneById(UserModel);
 
 // @ desc   Update specific user
-// @ route  PUT    /api/v1/users/:id
+// @ route  PUT    /api/v2/users/:id
 // @ access Private
 
 const updateUserById = asyncHandler(async (req, res, next) => {
@@ -86,7 +86,7 @@ const updateUserById = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Change Password for a specific user
-// @ route  PUT    /api/v1/users/changePassword/:id
+// @ route  PUT    /api/v2/users/changePassword/:id
 // @ access Private
 
 const changeUserPassword = asyncHandler(async (req, res, next) => {
@@ -115,13 +115,13 @@ const changeUserPassword = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Delete specific user
-// @ route  DELETE    /api/v1/users/:id
+// @ route  DELETE    /api/v2/users/:id
 // @ access Private
 
 const deleteUserById = factory.deleteOne(UserModel, 'profileImage');
 
 // @ desc   Get Logged user data
-// @ route  GET    /api/v1/users/loggedUser
+// @ route  GET    /api/v2/users/loggedUser
 // @ access Private/Protect
 
 const getLoggedUserData = asyncHandler(async (req, res, next) => {
@@ -130,7 +130,7 @@ const getLoggedUserData = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Change Logged User Password for
-// @ route  PUT    /api/v1/users/changePassword
+// @ route  PUT    /api/v2/users/changePassword
 // @ access Private/Protect
 
 const changeLoggedUserPassword = asyncHandler(async (req, res, next) => {
@@ -164,7 +164,7 @@ const changeLoggedUserPassword = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Update Logged User Data (Without password, role)
-// @ route  PUT    /api/v1/users/updateMe
+// @ route  PUT    /api/v2/users/updateMe
 // @ access Private/Protect
 
 const updateLoggedUserData = asyncHandler(async (req, res, next) => {
@@ -201,7 +201,7 @@ const updateLoggedUserData = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Deactivate Logged User
-// @ route  PUT    /api/v1/users/deactivateMe
+// @ route  PUT    /api/v2/users/deactivateMe
 // @ access Private/Protect
 
 const deactivateLoggedUser = asyncHandler(async (req, res, next) => {
@@ -222,7 +222,7 @@ const deactivateLoggedUser = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Deactivate Logged User
-// @ route  PUT    /api/v1/users/deactivateMe
+// @ route  PUT    /api/v2/users/deactivateMe
 // @ access Private/Protect
 
 const reactivateUserAccount = asyncHandler(async (req, res, next) => {

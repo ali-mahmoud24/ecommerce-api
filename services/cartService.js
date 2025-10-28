@@ -20,7 +20,7 @@ const calculateTotalCartPrice = (cart) => {
 };
 
 // @ desc   Add Product to cart
-// @ route  POST    /api/v1/cart
+// @ route  POST    /api/v2/cart
 // @ access Protect/User
 
 const addProductToCart = asyncHandler(async (req, res, next) => {
@@ -78,14 +78,16 @@ const addProductToCart = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Get Logged User Cart
-// @ route  GET    /api/v1/cart
+// @ route  GET    /api/v2/cart
 // @ access Protect/User
 
 const getLoggedUserCart = asyncHandler(async (req, res, next) => {
   const userId = req.user._id;
 
-  const cart = await CartModel.findOne({ user: userId });
-
+  const cart = await CartModel.findOne({ user: userId }).populate({
+    path: 'cartItems.product',
+    select: 'title price',
+  });
   if (!cart) {
     return next(new APIError(`No Cart for this User Id : ${userId}`, 404));
   }
@@ -97,7 +99,7 @@ const getLoggedUserCart = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Remove specific cart item
-// @ route  GET    /api/v1/cart/:id
+// @ route  GET    /api/v2/cart/:id
 // @ access Protect/User
 
 const removeItemFromCart = asyncHandler(async (req, res, next) => {
@@ -130,7 +132,7 @@ const removeItemFromCart = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc  Clear Logged User Cart
-// @ route  DELETE    /api/v1/cart
+// @ route  DELETE    /api/v2/cart
 // @ access Protect/User
 
 const clearLoggedUserCart = asyncHandler(async (req, res, next) => {
@@ -142,7 +144,7 @@ const clearLoggedUserCart = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Update specific cart item quantity
-// @ route  PUT    /api/v1/cart/:id
+// @ route  PUT    /api/v2/cart/:id
 // @ access Protect/User
 
 const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
@@ -184,7 +186,7 @@ const updateCartItemQuantity = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Apply coupon on user cart
-// @ route  PUT    /api/v1/cart/applyCoupon
+// @ route  PUT    /api/v2/cart/applyCoupon
 // @ access Protect/User
 
 const applyCoupon = asyncHandler(async (req, res, next) => {

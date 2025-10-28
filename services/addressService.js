@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const UserModel = require('../models/userModel');
 
 // @ desc   Add Address to addresses list
-// @ route  POST    /api/v1/addresses
+// @ route  POST    /api/v2/addresses
 // @ access Protect/User
 
 const addAddress = asyncHandler(async (req, res, next) => {
@@ -52,7 +52,7 @@ const addAddress = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Edit secific
-// @ route  PATCH    /api/v1/addresses
+// @ route  PATCH    /api/v2/addresses
 // @ access Protect/User
 
 const editAddress = asyncHandler(async (req, res, next) => {
@@ -82,7 +82,7 @@ const editAddress = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Remove Address
-// @ route  DELETE    /api/v1/addresses/:id
+// @ route  DELETE    /api/v2/addresses/:id
 // @ access Protect/User
 
 const removeAddress = asyncHandler(async (req, res, next) => {
@@ -105,7 +105,7 @@ const removeAddress = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Get Logged User Addresses
-// @ route  Get    /api/v1/addresses
+// @ route  Get    /api/v2/addresses
 // @ access Protect/User
 
 const getLoggedUserAddresses = asyncHandler(async (req, res, next) => {

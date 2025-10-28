@@ -12,13 +12,13 @@ const setProductIdAndUserIdToBody = (req, res, next) => {
 };
 
 // @ desc   Create review
-// @ route  POST    /api/v1/reviews
+// @ route  POST    /api/v2/reviews
 // @ access Private/Protect/User
 
 const createReview = factory.createOne(ReviewModel);
 
 // Nested route (Get)
-// GET /api/v1/products/:productId/reviews
+// GET /api/v2/products/:productId/reviews
 
 const createFilterObject = (req, res, next) => {
   let filterObject = {};
@@ -29,25 +29,25 @@ const createFilterObject = (req, res, next) => {
 };
 
 // @ desc   Get list of reviews
-// @ route  GET    /api/v1/reviews
+// @ route  GET    /api/v2/reviews
 // @ access Public
 
 const getReviews = factory.getAll(ReviewModel);
 
 // @ desc   Get specific review by id
-// @ route  GET    /api/v1/reviews/:id
+// @ route  GET    /api/v2/reviews/:id
 // @ access Public
 
 const getReviewById = factory.getOneById(ReviewModel);
 
 // @ desc   Update specific review
-// @ route  PUT    /api/v1/reviews/:id
+// @ route  PUT    /api/v2/reviews/:id
 // @ access Private/Protect/User
 
 const updateReviewById = factory.updateOneById(ReviewModel);
 
 // @ desc   Delete specific review
-// @ route  DELETE    /api/v1/reviews/:id
+// @ route  DELETE    /api/v2/reviews/:id
 // @ access Private/Protect/User-Admin
 
 const deleteReviewById = factory.deleteOne(ReviewModel);

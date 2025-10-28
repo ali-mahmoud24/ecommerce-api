@@ -28,31 +28,31 @@ const setSlugToBody = (req, res, next) => {
 };
 
 // @ desc   Create Subcategory
-// @ route  POST    /api/v1/subcategories
+// @ route  POST    /api/v2/subcategories
 // @ access Private
 
 const createSubcategory = factory.createOne(SubcategoryModel);
 
 // @ desc   Get list of Subcategories
-// @ route  GET    /api/v1/subcategories
+// @ route  GET    /api/v2/subcategories
 // @ access Public
 
 const getSubcategories = factory.getAll(SubcategoryModel, 'category');
 
 // @ desc   Get specific Subcategory by id
-// @ route  GET    /api/v1/subcategories/:id
+// @ route  GET    /api/v2/subcategories/:id
 // @ access Public
 
 const getSubcategoryById = factory.getOneById(SubcategoryModel);
 
 // @ desc   Update specific SubCategory
-// @ route  PUT    /api/v1/subcategories/:id
+// @ route  PUT    /api/v2/subcategories/:id
 // @ access Private
 
 const updateSubcategoryById = factory.updateOneById(SubcategoryModel);
 
 // @ desc   Delete specific Subcategory
-// @ route  DELETE    /api/v1/subcategories/:id
+// @ route  DELETE    /api/v2/subcategories/:id
 // @ access Private
 
 const deleteSubcategoryById = factory.deleteOne(SubcategoryModel);

@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const UserModel = require('../models/userModel');
 
 // @ desc   Add Product to Wishlist
-// @ route  POST    /api/v1/wishlist
+// @ route  POST    /api/v2/wishlist
 // @ access Protect/User
 
 const addProductToWishlist = asyncHandler(async (req, res, next) => {
@@ -27,7 +27,7 @@ const addProductToWishlist = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Remove Product to Wishlist
-// @ route  DELETE    /api/v1/wishlist/:productId
+// @ route  DELETE    /api/v2/wishlist/:productId
 // @ access Protect/User
 
 const removeProductFromWishlist = asyncHandler(async (req, res, next) => {
@@ -51,7 +51,7 @@ const removeProductFromWishlist = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Get Logged User Wishlist
-// @ route  Get    /api/v1/wishlist
+// @ route  Get    /api/v2/wishlist
 // @ access Protect/User
 
 const getLoggedUserWishlist = asyncHandler(async (req, res, next) => {

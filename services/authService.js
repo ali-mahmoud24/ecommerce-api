@@ -105,7 +105,7 @@ const allowedTo = (...roles) =>
 // // // // // // // // // // // // // // // // // // // // // // // // // //
 
 // @ desc   Signup
-// @ route  POST    /api/v1/auth/signup
+// @ route  POST    /api/v2/auth/signup
 // @ access Public
 
 const signup = asyncHandler(async (req, res, next) => {
@@ -124,7 +124,7 @@ const signup = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Login
-// @ route  POST    /api/v1/auth/login
+// @ route  POST    /api/v2/auth/login
 // @ access Public
 
 const login = asyncHandler(async (req, res, next) => {
@@ -150,7 +150,7 @@ const login = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc   Forget Password
-// @ route  POST    /api/v1/auth/forgotPassword
+// @ route  POST    /api/v2/auth/forgotPassword
 // @ access Public
 
 const forgotPassword = asyncHandler(async (req, res, next) => {
@@ -206,7 +206,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc  Verify Password Reset Code
-// @ route  POST    /api/v1/auth/verifyResetCode
+// @ route  POST    /api/v2/auth/verifyResetCode
 // @ access Public
 
 const verifyResetCode = asyncHandler(async (req, res, next) => {
@@ -244,7 +244,7 @@ const verifyResetCode = asyncHandler(async (req, res, next) => {
 });
 
 // @ desc  Reset Password
-// @ route  POST    /api/v1/auth/resetPassword
+// @ route  POST    /api/v2/auth/resetPassword
 // @ access Public
 
 const resetPassword = asyncHandler(async (req, res, next) => {

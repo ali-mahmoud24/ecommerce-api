@@ -33,25 +33,25 @@ const setSlugToBody = (req, res, next) => {
 };
 
 // @ desc   Create Product
-// @ route  POST    /api/v1/products
+// @ route  POST    /api/v2/products
 // @ access Private
 
 const createProduct = factory.createOne(ProductModel);
 
 // @ desc   Get list of products
-// @ route  GET    /api/v1/products
+// @ route  GET    /api/v2/products
 // @ access Public
 
 const getproducts = factory.getAll(ProductModel);
 
 // @ desc   Get specific Product by id
-// @ route  GET    /api/v1/products/:id
+// @ route  GET    /api/v2/products/:id
 // @ access Public
 
 const getProductById = factory.getOneById(ProductModel, 'reviews');
 
 // @ desc   Update specific Product
-// @ route  PUT    /api/v1/products/:id
+// @ route  PUT    /api/v2/products/:id
 // @ access Private
 
 const updateProductById = factory.updateOneWithMultipleImages(
@@ -68,7 +68,7 @@ const updateProductById = factory.updateOneWithMultipleImages(
 // );
 
 // @ desc   Delete specific Product
-// @ route  DELETE    /api/v1/products/:id
+// @ route  DELETE    /api/v2/products/:id
 // @ access Private
 
 const deleteProductById = factory.deleteOne(
