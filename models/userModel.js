@@ -155,6 +155,7 @@ userSchema.virtual('profileImageUrl').get(function () {
 });
 
 // 2- Create model
-const UserModel = mongoose.model('User', userSchema);
+// const UserModel = mongoose.model('User', userSchema); // NEW
+const UserModel = mongoose.models.User || mongoose.model('User', userSchema);
 
 module.exports = UserModel;
