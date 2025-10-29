@@ -1,11 +1,11 @@
-const asyncHandler = require('express-async-handler');
-const bcrypt = require('bcryptjs');
+const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcryptjs");
 
-const UserModel = require('../models/userModel');
-const APIError = require('../utils/apiError');
+const UserModel = require("../models/userModel");
+const APIError = require("../utils/apiError");
 
-const sendEmail = require('../utils/sendEmail');
-const { sanitizeUser } = require('../utils/sanitizeData');
+const sendEmail = require("../utils/sendEmail");
+const { sanitizeUser } = require("../utils/sanitizeData");
 
 const {
   createToken,
@@ -13,7 +13,7 @@ const {
   generateResetCode,
   hashResetCode,
   hashAndVerifyResetCode,
-} = require('../utils/auth');
+} = require("../utils/auth");
 
 // MIDDLEWARES
 
@@ -25,9 +25,9 @@ const protect = asyncHandler(async (req, res, next) => {
   let token;
   if (
     req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
+    req.headers.authorization.startsWith("Bearer")
   ) {
-    token = req.headers.authorization.split(' ')[1];
+    token = req.headers.authorization.split(" ")[1];
   }
 
   if (!token) {
@@ -149,6 +149,44 @@ const login = asyncHandler(async (req, res, next) => {
   res.status(201).json({ data: sanitizeUser(user), token });
 });
 
+// @desc    Authenticate user with Google and issue JWT
+// @route   GET    /api/v2/auth/google/callback
+// @access  Public
+
+const googleAuth = asyncHandler(async (req, res, next) => {
+  if (!req.user) {
+    return next(new APIError("Google authentication failed", 400));
+  }
+
+  const sanitized = sanitizeUser(req.user);
+  const token = createToken(req.user._id);
+
+  //  Redirect to frontend if defined
+  if (process.env.CLIENT_URL) {
+    const redirectUrl = `${process.env.CLIENT_URL}/auth/success?token=${token}&name=${encodeURIComponent(
+      sanitized.name
+    )}`;
+    return res.redirect(redirectUrl);
+  }
+
+  res.status(200).json({
+    message: "Google login successful",
+    data: sanitized,
+    token,
+  });
+});
+
+// @desc    Handle Google authentication failure
+// @route   GET    /api/v2/auth/google/failure
+// @access  Public
+
+const googleFailure = (req, res) => {
+  if (process.env.CLIENT_URL) {
+    return res.redirect(`${process.env.CLIENT_URL}/auth/error`);
+  }
+  res.status(400).json({ message: "Google authentication failed" });
+};
+
 // @ desc   Forget Password
 // @ route  POST    /api/v2/auth/forgotPassword
 // @ access Public
@@ -189,7 +227,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   try {
     await sendEmail({
       email: user.email,
-      subject: 'Your Password is valid for reset',
+      subject: "Your Password is valid for reset",
       message,
     });
   } catch (error) {
@@ -202,7 +240,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
   res
     .status(200)
-    .json({ status: 'Success', message: 'Reset Code sent to the email' });
+    .json({ status: "Success", message: "Reset Code sent to the email" });
 });
 
 // @ desc  Verify Password Reset Code
@@ -240,7 +278,7 @@ const verifyResetCode = asyncHandler(async (req, res, next) => {
   user.passwordResetVerified = true;
   await user.save();
 
-  res.status(200).json({ status: 'Success' });
+  res.status(200).json({ status: "Success" });
 });
 
 // @ desc  Reset Password
@@ -285,4 +323,6 @@ module.exports = {
   // Middlewares
   protect,
   allowedTo,
+  googleAuth,
+  googleFailure,
 };

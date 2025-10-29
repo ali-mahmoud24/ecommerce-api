@@ -10,11 +10,8 @@ const hpp = require("hpp");
 const mongoSanitize = require("express-mongo-sanitize");
 const { xss } = require("express-xss-sanitizer");
 
-const session = require("express-session"); // NEW
-const MongoStore = require("connect-mongo"); // NEW
 require("./config/passport"); // NEW
 const passport = require("passport"); // NEW
-const googleAuthRoute = require("./routes/googleAuthRoute"); // NEW
 
 
 const APIError = require("./utils/apiError");
@@ -70,31 +67,11 @@ app.use("/api", limiter);
 // Middleware to protect against HTTP Parameter Pollution attacks
 app.use(hpp({ whitelist: ["price", "sold", "quantity", "avgRating"] }));
 
-// Signup With google
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.DB_URI,
-    }),
-    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
-  })
-);
-
+// // Signup With google
 app.use(passport.initialize());
-app.use(passport.session());
-
-// ✅ Mount Google Auth Route
-app.use("/api/v2/auth", googleAuthRoute);
 
 // Mount Routes
 mountRoutes(app);
-app.get("/api/v2/auth/google/callback", (req, res, next) => {
-  console.log("🔥 Callback reached!");
-  next();
-});
 
 app.all("*", (req, res, next) => {
   // Create Custom Error and send to error handling middleware
