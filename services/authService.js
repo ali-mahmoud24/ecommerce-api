@@ -4,12 +4,10 @@ const bcrypt = require('bcryptjs');
 const UserModel = require('../models/userModel');
 const APIError = require('../utils/apiError');
 
-const { sanitizeUser } = require('../utils/sanitizeData');
 const sendEmail = require('../utils/sendEmail');
 const sendToken = require('../utils/sendToken');
 
 const {
-  createToken,
   verifyToken,
   generateResetCode,
   hashResetCode,
