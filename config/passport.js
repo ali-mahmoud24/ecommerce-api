@@ -1,5 +1,6 @@
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const passport = require("passport");
+
 const UserModel = require("../models/userModel");
 
 passport.use(
@@ -12,8 +13,8 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails[0].value;
-        const firstName = profile.name?.givenName || "";
-        const lastName = profile.name?.familyName || "";
+        const firstName = profile.name.givenName || "";
+        const lastName = profile.name.familyName || "";
 
         let user = await UserModel.findOne({ email });
 

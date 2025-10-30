@@ -1,11 +1,12 @@
-const asyncHandler = require("express-async-handler");
-const bcrypt = require("bcryptjs");
+const asyncHandler = require('express-async-handler');
+const bcrypt = require('bcryptjs');
 
-const UserModel = require("../models/userModel");
-const APIError = require("../utils/apiError");
+const UserModel = require('../models/userModel');
+const APIError = require('../utils/apiError');
 
-const sendEmail = require("../utils/sendEmail");
-const { sanitizeUser } = require("../utils/sanitizeData");
+const { sanitizeUser } = require('../utils/sanitizeData');
+const sendEmail = require('../utils/sendEmail');
+const sendToken = require('../utils/sendToken');
 
 const {
   createToken,
@@ -13,7 +14,7 @@ const {
   generateResetCode,
   hashResetCode,
   hashAndVerifyResetCode,
-} = require("../utils/auth");
+} = require('../utils/auth');
 
 // MIDDLEWARES
 
@@ -22,21 +23,21 @@ const {
 const protect = asyncHandler(async (req, res, next) => {
   // 1- Check if token exist
 
+  const { cookies, headers } = req;
+
   let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
+
+  if (cookies.token) {
+    ({ token } = cookies); // Read from cookie
+  } else if (
+    headers.authorization &&
+    headers.authorization.startsWith('Bearer')
   ) {
-    token = req.headers.authorization.split(" ")[1];
+    token = headers.authorization.split(' ')[1]; // fallback for mobile / API testing / postman
   }
 
   if (!token) {
-    return next(
-      new APIError(
-        `You are not logged in, Please login to access this route`,
-        401
-      )
-    );
+    return next(new APIError(`You are not logged in`, 401));
   }
 
   // 2- Verify token (Change in token - Expired token)
@@ -117,10 +118,8 @@ const signup = asyncHandler(async (req, res, next) => {
     password: req.body.password,
   });
 
-  // 2- Generate JWT token
-  const token = createToken(user._id);
-
-  res.status(201).json({ data: sanitizeUser(user), token });
+  // 2- Generate JWT token and send it in cookies and response
+  sendToken(user, 201, res);
 });
 
 // @ desc   Login
@@ -143,10 +142,17 @@ const login = asyncHandler(async (req, res, next) => {
     return next(new APIError(`Invalid email or password`, 401));
   }
 
-  // 3- Generate JWT token
-  const token = createToken(user._id);
+  // 3- Generate JWT token and send it in cookies and response
+  sendToken(user, 200, res);
+});
 
-  res.status(201).json({ data: sanitizeUser(user), token });
+// @ desc   Logout
+// @ route  POST    /api/v2/auth/logout
+// @ access Public
+
+const logout = asyncHandler(async (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({ message: 'Logged out successfully' });
 });
 
 // @desc    Authenticate user with Google and issue JWT
@@ -155,25 +161,13 @@ const login = asyncHandler(async (req, res, next) => {
 
 const googleAuth = asyncHandler(async (req, res, next) => {
   if (!req.user) {
-    return next(new APIError("Google authentication failed", 400));
+    return next(new APIError('Google authentication failed', 400));
   }
 
-  const sanitized = sanitizeUser(req.user);
-  const token = createToken(req.user._id);
-
-  //  Redirect to frontend if defined
   if (process.env.CLIENT_URL) {
-    const redirectUrl = `${process.env.CLIENT_URL}/auth/success?token=${token}&name=${encodeURIComponent(
-      sanitized.name
-    )}`;
-    return res.redirect(redirectUrl);
+    sendToken(req.user, 200, res);
+    return res.redirect(`${process.env.CLIENT_URL}/home`);
   }
-
-  res.status(200).json({
-    message: "Google login successful",
-    data: sanitized,
-    token,
-  });
 });
 
 // @desc    Handle Google authentication failure
@@ -184,7 +178,7 @@ const googleFailure = (req, res) => {
   if (process.env.CLIENT_URL) {
     return res.redirect(`${process.env.CLIENT_URL}/auth/error`);
   }
-  res.status(400).json({ message: "Google authentication failed" });
+  res.status(400).json({ message: 'Google authentication failed' });
 };
 
 // @ desc   Forget Password
@@ -227,7 +221,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   try {
     await sendEmail({
       email: user.email,
-      subject: "Your Password is valid for reset",
+      subject: 'Your Password is valid for reset',
       message,
     });
   } catch (error) {
@@ -240,7 +234,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
   res
     .status(200)
-    .json({ status: "Success", message: "Reset Code sent to the email" });
+    .json({ status: 'Success', message: 'Reset Code sent to the email' });
 });
 
 // @ desc  Verify Password Reset Code
@@ -278,7 +272,7 @@ const verifyResetCode = asyncHandler(async (req, res, next) => {
   user.passwordResetVerified = true;
   await user.save();
 
-  res.status(200).json({ status: "Success" });
+  res.status(200).json({ status: 'Success' });
 });
 
 // @ desc  Reset Password
@@ -308,15 +302,14 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 
   await user.save();
 
-  // 3) Generate token
-  const token = createToken(user._id);
-
-  res.status(200).json({ token });
+  // 3) Generate JWT token and send it in cookies and response
+  sendToken(user, 200, res);
 });
 
 module.exports = {
   signup,
   login,
+  logout,
   forgotPassword,
   verifyResetCode,
   resetPassword,
