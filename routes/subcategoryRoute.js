@@ -27,8 +27,8 @@ const router = express.Router({ mergeParams: true });
 
 router.post(
   '/',
-  // protect,
-  // allowedTo('admin', 'manager'),
+  protect,
+  allowedTo('admin', 'manager'),
   setCategoryIdToBody,
   setSlugToBody,
   createSubcategoryValidator,
@@ -46,8 +46,8 @@ router.put(
 );
 router.delete(
   '/:id',
-  // protect,
-  // allowedTo('admin'),
+  protect,
+  allowedTo('admin'),
   deleteSubcategoryValidator,
   deleteSubcategoryById
 );
