@@ -33,9 +33,17 @@ const app = express();
 
 // Middlewares
 
-// Enable Cross-Origin Resource Sharing
-app.use(cors());
-app.options('*', cors());
+// app.use(cors());
+// app.options('*', cors());
+
+// // Enable Cross-Origin Resource Sharing
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true, // use cookies/auth
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Compress Response size
 app.use(compression());
