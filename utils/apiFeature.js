@@ -20,6 +20,9 @@ class APIFeature {
 
     this.mongooseQuery = this.mongooseQuery.find(queryStr);
 
+    // Save
+    this._filter = queryStr;
+
     return this;
   }
 
@@ -68,6 +71,14 @@ class APIFeature {
             },
           ],
         };
+      } else if (modelName === 'User') {
+        query = {
+          $or: [
+            { firstName: { $regex: this.queryString.keyword, $options: 'i' } },
+            { lastName: { $regex: this.queryString.keyword, $options: 'i' } },
+            { email: { $regex: this.queryString.keyword, $options: 'i' } },
+          ],
+        };
       } else {
         query = {
           $or: [{ name: { $regex: this.queryString.keyword, $options: 'i' } }],
@@ -75,50 +86,49 @@ class APIFeature {
       }
 
       this.mongooseQuery = this.mongooseQuery.find(query);
+
+      // Save
+      this._search = query;
     }
     return this;
   }
 
   // 5) Pagination
-  paginate(countDocuments) {
+  paginate(totalDocs) {
     const page = Number(this.queryString.page) || 1;
     const limit = Number(this.queryString.limit) || 50;
     const skip = (page - 1) * limit;
 
-    const endIndex = page * limit;
+    const numberOfPages = Math.ceil(totalDocs / limit);
+
+    // const endIndex = page * limit;
 
     // Pagination result
-    const pagination = {};
-    pagination.currentPage = page;
-    pagination.limit = limit;
-    pagination.numberOfPages = Math.ceil(countDocuments / limit);
-
-    // next page
-    if (endIndex < countDocuments) {
-      pagination.next = page + 1;
-    }
-
-    // previous page
-    if (skip > 0) {
-      pagination.previous = page - 1;
-    }
+    this.paginationResult = {
+      currentPage: page,
+      limit,
+      numberOfPages,
+      totalDocs,
+      next: page < numberOfPages ? page + 1 : null,
+      previous: page > 1 ? page - 1 : null,
+    };
 
     // Build query
     this.mongooseQuery = this.mongooseQuery.skip(skip).limit(limit);
-    this.paginationResult = pagination;
-
     return this;
   }
 
   async count() {
     // Clone the original query to avoid altering it
-    const queryClone = this.mongooseQuery.clone();
+    const queryClone = this.mongooseQuery.clone(this._filter || {});
+
+    if (this._search) queryClone.find(this._search);
 
     // Execute the count on the cloned query
-    const count = await queryClone.countDocuments();
+    const totalDocs = await queryClone.countDocuments();
 
     // Store the count in the instance
-    this.count = count;
+    this.totalDocs = totalDocs;
   }
 }
 

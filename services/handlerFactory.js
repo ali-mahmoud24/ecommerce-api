@@ -28,7 +28,7 @@ const getAll = (Model, populateOptions) =>
 
     await apiFeature.count();
 
-    apiFeature.paginate(apiFeature.count);
+    apiFeature.paginate(apiFeature.totalDocs);
 
     // Execute query
     const { mongooseQuery, paginationResult } = apiFeature;
