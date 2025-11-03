@@ -14,15 +14,19 @@ const sendEmail = async (options) => {
 
   // 2) Define email options (from - to - subject - content)
   const mailOptions = {
-    from: 'E-shop App <e-shop@shop.com>',
+    from: `"E-Shop App" <${process.env.EMAIL_USER}>`,
     to: options.email,
     subject: options.subject,
     text: options.message,
+    html: options.html,
   };
 
   // 3) Send email
-
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
 };
 
 module.exports = sendEmail;

@@ -209,18 +209,54 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
   // 4) Send the reset code via email
 
-  const message = `Hi ${user.firstName},
-  \n We received a request to reset the password on your E-shop Account. \n 
-  ${resetCode} \n 
-  Enter this code to complete the reset. \n
-  Thanks for helping us keep your acount secure.
-  `;
+  // const message = `Hi ${user.firstName},
+  // \n We received a request to reset the password on your E-shop Account. \n
+  // ${resetCode} \n
+  // Enter this code to complete the reset. \n
+  // Thanks for helping us keep your acount secure.
+  // `;
+  const htmlMessage = `
+  <div style="font-family:Arial, sans-serif; padding:20px; background:#f8f9fa;">
+    <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:8px; border:1px solid #ddd;">
+      <h2 style="color:#333;">Password Reset Request</h2>
+
+      <p>Hi <strong>${user.firstName}</strong>,</p>
+
+      <p>We received a request to reset your password for your <strong>E-Shop</strong> account.</p>
+
+      <p>Use the verification code below to reset your password:</p>
+
+      <div style="text-align:center; margin:25px 0;">
+        <span style="
+          font-size:28px;
+          letter-spacing:6px;
+          font-weight:bold;
+          color:#2c7be5;
+          display:inline-block;
+          padding:10px 20px;
+          border:1px dashed #2c7be5;
+          border-radius:6px;
+        ">
+          ${resetCode}
+        </span>
+      </div>
+
+      <p>This code will expire in <strong>10 minutes</strong>.</p>
+
+      <p>If you didn’t request this, you can safely ignore this email.</p>
+
+      <br />
+      <p style="color:#555;">Thanks,</p>
+      <p style="color:#2c7be5; font-weight:bold;">E-Shop Security Team</p>
+    </div>
+  </div>
+`;
 
   try {
     await sendEmail({
       email: user.email,
-      subject: 'Your Password is valid for reset',
-      message,
+      subject: 'Password Reset Code',
+      html: htmlMessage,
     });
   } catch (error) {
     user.passwordResetCode = undefined;
