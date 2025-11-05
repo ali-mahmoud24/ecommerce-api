@@ -1,5 +1,4 @@
 const asyncHandler = require('express-async-handler');
-const slugify = require('slugify');
 const bcrypt = require('bcryptjs');
 
 const UserModel = require('../models/userModel');
@@ -20,14 +19,8 @@ const uploadUserImage = uploadSingleImage('profileImage');
 const resizeUserImage = resizeImage('users', 'user', 'profileImage');
 const deleteUserImage = deleteCloudinaryImages();
 
-const setSlugToBody = (req, res, next) => {
-  if (req.body.name) {
-    const { name } = req.body;
-    req.body.slug = slugify(name);
-  }
 
-  next();
-};
+
 
 // @ desc   Create user
 // @ route  POST    /api/v2/users
@@ -266,6 +259,5 @@ module.exports = {
   // Middlewares
   uploadUserImage,
   resizeUserImage,
-  setSlugToBody,
   deleteUserImage,
 };

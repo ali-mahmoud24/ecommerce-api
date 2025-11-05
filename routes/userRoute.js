@@ -21,7 +21,7 @@ const {
   changeUserPassword,
   deleteUserById,
   // Middlewares
-  setSlugToBody,
+  
   uploadUserImage,
   resizeUserImage,
 
@@ -41,7 +41,7 @@ const router = express.Router();
 
 router.post('/activateAccount', loginValidator, reactivateUserAccount);
 
-router.use(protect);
+// router.use(protect);
 
 // USER
 
@@ -64,14 +64,14 @@ router.delete('/deactivateMe', deactivateLoggedUser);
 
 // ADMIN
 // Apply to all upcoming routes
-router.use(allowedTo('admin'));
+// router.use(allowedTo('admin'));
 
 router.post(
   '/',
   uploadUserImage,
   resizeUserImage,
   createUserValidator,
-  setSlugToBody,
+  
   createUser
 );
 router.get('/', getUsers);
@@ -83,7 +83,7 @@ router.put(
   uploadUserImage,
   resizeUserImage,
   updateUserValidator,
-  setSlugToBody,
+  
   updateUserById,
   deleteUserImage,
   sendUpdatedDocResponse
