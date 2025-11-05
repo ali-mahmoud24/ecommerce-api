@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const cartSchema = new mongoose.Schema(
   {
@@ -6,7 +6,7 @@ const cartSchema = new mongoose.Schema(
       {
         product: {
           type: mongoose.Schema.ObjectId,
-          ref: 'Product',
+          ref: "Product",
         },
         quantity: { type: Number, default: 1 },
         color: { type: String },
@@ -19,7 +19,7 @@ const cartSchema = new mongoose.Schema(
 
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: 'User',
+      ref: "User",
     },
   },
 
@@ -30,14 +30,17 @@ const cartSchema = new mongoose.Schema(
     toJSON: {
       virtuals: true,
       transform: (doc, ret) => {
-        ret.id = ret._id.toString();
-        delete ret._id;
+        if (ret && ret._id) {
+          ret.id = ret._id.toString();
+          delete ret._id;
+        }
+        return ret;
       },
     },
   }
 );
 
 // 2- Create model
-const CartModel = mongoose.model('Cart', cartSchema);
+const CartModel = mongoose.model("Cart", cartSchema);
 
 module.exports = CartModel;
