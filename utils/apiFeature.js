@@ -35,7 +35,9 @@ class APIFeature {
       // "price,sold" ==> "price sold"
       const sortBy = sort.split(',').join(' ');
 
-      this.mongooseQuery = this.mongooseQuery.sort(sortBy);
+      this.mongooseQuery = this.mongooseQuery
+        .collation({ locale: 'en', strength: 2 })
+        .sort(sortBy);
     } else {
       this.mongooseQuery = this.mongooseQuery.sort('-createdAt');
     }
