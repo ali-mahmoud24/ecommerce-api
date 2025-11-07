@@ -86,7 +86,7 @@ const getLoggedUserCart = asyncHandler(async (req, res, next) => {
 
   const cart = await CartModel.findOne({ user: userId }).populate({
     path: 'cartItems.product',
-    select: 'title price',
+    select: 'title price imageCover',
   });
   if (!cart) {
     return next(new APIError(`No Cart for this User Id : ${userId}`, 404));

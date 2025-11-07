@@ -1,10 +1,11 @@
-const asyncHandler = require('express-async-handler');
-const { v4: uuid } = require('uuid');
-const sharp = require('sharp');
-const streamifier = require('streamifier');
-const cloudinary = require('../config/cloudinary');
+const asyncHandler = require("express-async-handler");
+const { v4: uuid } = require("uuid");
+const sharp = require("sharp");
+const streamifier = require("streamifier");
+const APIError = require("../utils/apiError");
+const cloudinary = require("../config/cloudinary");
 
-const MAIN_FOLDER = process.env.CLOUDINARY_MAIN_FOLDER || 'default-folder';
+const MAIN_FOLDER = process.env.CLOUDINARY_MAIN_FOLDER || "default-folder";
 
 //  Helper: Upload buffer to Cloudinary
 const uploadToCloudinary = (buffer, folder, filename) =>
@@ -13,7 +14,7 @@ const uploadToCloudinary = (buffer, folder, filename) =>
       {
         folder: `${MAIN_FOLDER}/${folder}`,
         public_id: filename,
-        resource_type: 'image',
+        resource_type: "image",
       },
       (error, result) => {
         if (error) reject(error);
@@ -28,15 +29,15 @@ async function processImage(buffer, width, height, quality = 75) {
   try {
     // Try WebP first — better compression
     return await sharp(buffer)
-      .resize(width, height, { fit: 'cover' })
-      .toFormat('webp')
+      .resize(width, height, { fit: "cover" })
+      .toFormat("webp")
       .webp({ quality })
       .toBuffer();
   } catch (err) {
-    console.error('WebP conversion failed, using JPEG fallback:', err.message);
+    console.error("WebP conversion failed, using JPEG fallback:", err.message);
     return await sharp(buffer)
-      .resize(width, height, { fit: 'cover' })
-      .toFormat('jpeg')
+      .resize(width, height, { fit: "cover" })
+      .toFormat("jpeg")
       .jpeg({ quality })
       .toBuffer();
   }
@@ -45,20 +46,46 @@ async function processImage(buffer, width, height, quality = 75) {
 //  Single Image Resize Middleware
 const resizeImage = (folderName, entityName, imageField) =>
   asyncHandler(async (req, res, next) => {
+    // Validate file existence
     if (!req.file) return next();
 
-    const id = uuid();
-    const filename = `${entityName}-${id}-${Date.now()}`;
+    try {
+      //  Generate unique filename
+      const id = uuid();
+      const filename = `${entityName}-${id}-${Date.now()}`;
 
-    //  Optimized resize + WebP
-    const buffer = await processImage(req.file.buffer, 600, 600, 75);
+      // 3️⃣ Process image (Sharp resize + convert to WebP)
+      let buffer;
+      try {
+        buffer = await processImage(req.file.buffer, 600, 600, 75);
+      } catch (err) {
+        throw new APIError("Failed to process image", 500, err);
+      }
 
-    const uploadResult = await uploadToCloudinary(buffer, folderName, filename);
+      // 4️⃣ Upload to Cloudinary
+      let uploadResult;
+      try {
+        uploadResult = await uploadToCloudinary(buffer, folderName, filename);
+      } catch (err) {
+        console.error("Cloudinary Upload Error:", err);
 
-    req.body[imageField] = uploadResult.public_id;
-    req.body.imageUrl = uploadResult.secure_url;
+        throw new APIError("Image upload to Cloudinary failed", 502, err);
+      }
 
-    next();
+      // 5️⃣ Assign image data to req.body for DB
+      if (!uploadResult.public_id || !uploadResult.secure_url) {
+        throw new APIError("Invalid Cloudinary response", 500);
+      }
+
+      req.body[imageField] = uploadResult.public_id;
+      req.body.imageUrl = uploadResult.secure_url;
+
+      next();
+    } catch (err) {
+      // Log and forward to global error handler
+      console.error("Error in resizeImage middleware:", err);
+      next(err);
+    }
   });
 
 //  Multiple Images Resize Middleware
