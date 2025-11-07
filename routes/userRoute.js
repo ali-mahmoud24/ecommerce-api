@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 
 const {
   createUserValidator,
@@ -9,9 +9,9 @@ const {
 
   changeLoggedUserPasswordValidator,
   updateLoggedUserValidator,
-} = require('../utils/validators/userValidator');
+} = require("../utils/validators/userValidator");
 
-const { loginValidator } = require('../utils/validators/authValidator');
+const { loginValidator } = require("../utils/validators/authValidator");
 
 const {
   createUser,
@@ -21,7 +21,7 @@ const {
   changeUserPassword,
   deleteUserById,
   // Middlewares
-  
+
   uploadUserImage,
   resizeUserImage,
 
@@ -31,28 +31,28 @@ const {
   deactivateLoggedUser,
   reactivateUserAccount,
   deleteUserImage,
-} = require('../services/userService');
+} = require("../services/userService");
 
-const { protect, allowedTo } = require('../services/authService');
-const { sendUpdatedDocResponse } = require('../middlewares/updateResponse');
-const { sendDeleteResponse } = require('../middlewares/deleteResponse');
+const { protect, allowedTo } = require("../services/authService");
+const { sendUpdatedDocResponse } = require("../middlewares/updateResponse");
+const { sendDeleteResponse } = require("../middlewares/deleteResponse");
 
 const router = express.Router();
 
-router.post('/activateAccount', loginValidator, reactivateUserAccount);
+router.post("/activateAccount", loginValidator, reactivateUserAccount);
 
-// router.use(protect);
+router.use(protect);
 
 // USER
 
-router.get('/profile', getLoggedUserData, getUserById);
+router.get("/profile", protect, getLoggedUserData, getUserById);
 router.patch(
-  '/changeMyPassword',
+  "/changeMyPassword",
   changeLoggedUserPasswordValidator,
   changeLoggedUserPassword
 );
 router.put(
-  '/updateMe',
+  "/updateMe",
   uploadUserImage,
   resizeUserImage,
   updateLoggedUserValidator,
@@ -60,37 +60,37 @@ router.put(
   deleteUserImage,
   sendUpdatedDocResponse
 );
-router.delete('/deactivateMe', deactivateLoggedUser);
+router.delete("/deactivateMe", deactivateLoggedUser);
 
 // ADMIN
 // Apply to all upcoming routes
-// router.use(allowedTo('admin'));
+router.use(allowedTo('admin'));
 
 router.post(
-  '/',
+  "/",
   uploadUserImage,
   resizeUserImage,
   createUserValidator,
-  
+
   createUser
 );
-router.get('/', getUsers);
+router.get("/", getUsers);
 
-router.get('/:id', getUserValidator, getUserById);
+router.get("/:id", getUserValidator, getUserById);
 
 router.put(
-  '/:id',
+  "/:id",
   uploadUserImage,
   resizeUserImage,
   updateUserValidator,
-  
+
   updateUserById,
   deleteUserImage,
   sendUpdatedDocResponse
 );
 
 router.delete(
-  '/:id',
+  "/:id",
   deleteUserValidator,
   deleteUserById,
   deleteUserImage,
@@ -98,7 +98,7 @@ router.delete(
 );
 
 router.patch(
-  '/changePassword/:id',
+  "/changePassword/:id",
   changeUserPasswordValidator,
   changeUserPassword
 );
